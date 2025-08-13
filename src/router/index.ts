@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../components/Home.vue'
 import ModelsShowcase from '../components/ModelsShowcase.vue'
 import ProjectDetail from '../components/ProjectDetail.vue'
@@ -13,7 +13,7 @@ import PrivacyPolicy from '../components/PrivacyPolicy.vue'
 import TermsOfService from '../components/TermsOfService.vue'
 
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',

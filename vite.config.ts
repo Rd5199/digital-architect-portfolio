@@ -7,6 +7,18 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  base: './', // This makes the build work in any subdirectory
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router']
+        }
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
