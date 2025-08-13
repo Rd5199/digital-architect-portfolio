@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIME Type Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 10px; font-size: 16px; }
+        #results { margin-top: 20px; padding: 20px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>MIME Type Fix for Vue.js App</h1>
+    
+    <div>
+        <button onclick="testMimeTypes()">Test Current MIME Types</button>
+        <button onclick="forceCorrectMimeTypes()">Force Correct MIME Types</button>
+        <button onclick="clearCache()">Clear Browser Cache</button>
+    </div>
+    
+    <div id="results">
+        <h3>Results:</h3>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function testMimeTypes() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p class="info">Testing MIME types...</p>';
+            
+            // Test JavaScript MIME type
+            fetch('./assets/index-6c23a9fa.js')
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    const status = response.status;
+                    
+                    if (contentType && contentType.includes('application/javascript')) {
+                        output.innerHTML += `<p class="success">✅ JavaScript MIME type correct: ${contentType}</p>`;
+                    } else {
+                        output.innerHTML += `<p class="error">❌ JavaScript MIME type wrong: ${contentType} (Status: ${status})</p>`;
+                    }
+                })
+                .catch(error => {
+                    output.innerHTML += `<p class="error">❌ Error testing JavaScript: ${error.message}</p>`;
+                });
+            
+            // Test CSS MIME type
+            fetch('./assets/index-aaa5464a.css')
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    const status = response.status;
+                    
+                    if (contentType && contentType.includes('text/css')) {
+                        output.innerHTML += `<p class="success">✅ CSS MIME type correct: ${contentType}</p>`;
+                    } else {
+                        output.innerHTML += `<p class="error">❌ CSS MIME type wrong: ${contentType} (Status: ${status})</p>`;
+                    }
+                })
+                .catch(error => {
+                    output.innerHTML += `<p class="error">❌ Error testing CSS: ${error.message}</p>`;
+                });
+        }
+        
+        function forceCorrectMimeTypes() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p class="info">Attempting to force correct MIME types...</p>';
+            
+            // This will reload the page with cache busting
+            const timestamp = new Date().getTime();
+            window.location.href = `./index.html?v=${timestamp}`;
+        }
+        
+        function clearCache() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<p class="info">Clearing browser cache...</p>';
+            
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                    output.innerHTML += '<p class="success">✅ Browser cache cleared</p>';
+                });
+            } else {
+                output.innerHTML += '<p class="info">Cache API not available. Please clear cache manually (Ctrl+F5)</p>';
+            }
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testMimeTypes, 1000);
+        };
+    </script>
+</body>
+</html> 
