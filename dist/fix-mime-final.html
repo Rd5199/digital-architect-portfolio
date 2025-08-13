@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final MIME Type Fix for Vue.js</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .error { color: #d32f2f; font-weight: bold; background: #ffebee; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .success { color: #388e3c; font-weight: bold; background: #e8f5e8; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .info { color: #1976d2; background: #e3f2fd; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .warning { color: #f57c00; background: #fff3e0; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        button { padding: 12px 24px; margin: 10px 5px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; }
+        .primary { background: #2196f3; color: white; }
+        .secondary { background: #757575; color: white; }
+        .danger { background: #f44336; color: white; }
+        .success-btn { background: #4caf50; color: white; }
+        #results { margin-top: 20px; }
+        .step { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #2196f3; }
+        .code { background: #263238; color: #fff; padding: 15px; border-radius: 5px; font-family: monospace; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Final MIME Type Fix for Vue.js App</h1>
+        
+        <div class="info">
+            <strong>Current Issue:</strong> Your server is serving JavaScript files with the wrong MIME type "video/mp2t" instead of "application/javascript".
+        </div>
+        
+        <div class="step">
+            <h3>Step 1: Test Current MIME Types</h3>
+            <button class="primary" onclick="testMimeTypes()">🔍 Test MIME Types Now</button>
+            <div id="test-results"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 2: Apply MIME Type Fixes</h3>
+            <button class="success-btn" onclick="applyMimeFixes()">🚀 Apply All Fixes</button>
+            <button class="secondary" onclick="showServerConfig()">📋 Show Server Config</button>
+            <div id="fix-results"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Step 3: Verify the Fix</h3>
+            <button class="primary" onclick="verifyFix()">✅ Verify Fix</button>
+            <div id="verify-results"></div>
+        </div>
+        
+        <div id="results"></div>
+        
+        <div class="warning">
+            <strong>Note:</strong> If you're still getting "video/mp2t" errors after applying these fixes, your hosting provider needs to configure the server. Use the server configuration guide below.
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('results');
+        
+        function testMimeTypes() {
+            const testResults = document.getElementById('test-results');
+            testResults.innerHTML = '<p class="info">Testing MIME types...</p>';
+            
+            // Test JavaScript file
+            fetch('./assets/index-6c23a9fa.js')
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    const status = response.status;
+                    
+                    let resultHtml = '<h4>JavaScript File Test:</h4>';
+                    resultHtml += `<p><strong>Status:</strong> ${status}</p>`;
+                    resultHtml += `<p><strong>Content-Type:</strong> <span class="${contentType && contentType.includes('application/javascript') ? 'success' : 'error'}">${contentType || 'NOT SET'}</span></p>`;
+                    
+                    if (contentType && contentType.includes('application/javascript')) {
+                        resultHtml += '<p class="success">✅ JavaScript MIME type is CORRECT!</p>';
+                    } else if (contentType && contentType.includes('video/mp2t')) {
+                        resultHtml += '<p class="error">❌ CRITICAL: JavaScript file has video/mp2t MIME type!</p>';
+                        resultHtml += '<p class="warning">This requires immediate server configuration fix.</p>';
+                    } else {
+                        resultHtml += `<p class="error">❌ JavaScript MIME type is WRONG: ${contentType}</p>`;
+                    }
+                    
+                    testResults.innerHTML = resultHtml;
+                })
+                .catch(error => {
+                    testResults.innerHTML = `<p class="error">❌ Error testing JavaScript: ${error.message}</p>`;
+                });
+        }
+        
+        function applyMimeFixes() {
+            const fixResults = document.getElementById('fix-results');
+            fixResults.innerHTML = '<p class="info">Applying MIME type fixes...</p>';
+            
+            // Clear browser cache
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+            
+            // Force reload with cache busting
+            setTimeout(() => {
+                const timestamp = new Date().getTime();
+                window.location.href = `./index.html?v=${timestamp}`;
+            }, 1000);
+            
+            fixResults.innerHTML = '<p class="success">✅ Cache cleared and page reloading...</p>';
+        }
+        
+        function showServerConfig() {
+            const fixResults = document.getElementById('fix-results');
+            fixResults.innerHTML = `
+                <h4>Server Configuration for Hosting Provider:</h4>
+                <div class="code">
+# APACHE CONFIGURATION (.htaccess)
+RewriteEngine On
+
+# Force correct MIME types
+&lt;FilesMatch "\.(js|mjs|ts|jsx|tsx)$"&gt;
+    ForceType application/javascript
+    Header set Content-Type "application/javascript"
+    Header set X-Content-Type-Options "nosniff"
+&lt;/FilesMatch&gt;
+
+&lt;FilesMatch "\.css$"&gt;
+    ForceType text/css
+    Header set Content-Type "text/css"
+    Header set X-Content-Type-Options "nosniff"
+&lt;/FilesMatch&gt;
+
+# NGINX CONFIGURATION
+location ~* \.(js|mjs|ts|jsx|tsx)$ {
+    add_header Content-Type "application/javascript" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    try_files $uri =404;
+}
+                </div>
+                <p class="info">Send this configuration to your hosting provider if the .htaccess file doesn't work.</p>
+            `;
+        }
+        
+        function verifyFix() {
+            const verifyResults = document.getElementById('verify-results');
+            verifyResults.innerHTML = '<p class="info">Verifying MIME type fix...</p>';
+            
+            // Test again
+            fetch('./assets/index-6c23a9fa.js')
+                .then(response => {
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/javascript')) {
+                        verifyResults.innerHTML = '<p class="success">🎉 SUCCESS! MIME type fix is working!</p>';
+                        verifyResults.innerHTML += '<p class="info">Your Vue.js app should now load correctly.</p>';
+                    } else {
+                        verifyResults.innerHTML = '<p class="error">❌ MIME type fix is NOT working yet.</p>';
+                        verifyResults.innerHTML += '<p class="warning">Contact your hosting provider with the server configuration above.</p>';
+                    }
+                })
+                .catch(error => {
+                    verifyResults.innerHTML = `<p class="error">❌ Error verifying fix: ${error.message}</p>`;
+                });
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testMimeTypes, 1000);
+        };
+    </script>
+</body>
+</html> 
