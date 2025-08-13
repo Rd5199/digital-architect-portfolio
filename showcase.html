@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Showcase - Cosmic Web Design</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #05051a;
+            color: white;
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        #showcase-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(5, 5, 26, 0.7);
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+            color: #00e6ff;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .control-btn {
+            background: rgba(94, 23, 235, 0.5);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+        
+        .control-btn:hover {
+            background: rgba(94, 23, 235, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .model-selector {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(5, 5, 26, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 10px;
+            pointer-events: auto;
+        }
+        
+        .model-btn {
+            background: none;
+            border: 2px solid rgba(94, 23, 235, 0.5);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .model-btn.active {
+            background: rgba(94, 23, 235, 0.8);
+            border-color: #00e6ff;
+            box-shadow: 0 0 10px rgba(0, 230, 255, 0.5);
+        }
+        
+        .model-btn:hover {
+            background: rgba(94, 23, 235, 0.3);
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #05051a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(94, 23, 235, 0.3);
+            border-top-color: #00e6ff;
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .stats {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(5, 5, 26, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: auto;
+            z-index: 10;
+        }
+        
+        .model-info {
+            position: absolute;
+            left: 20px;
+            bottom: 80px;
+            background: rgba(5, 5, 26, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 300px;
+            pointer-events: auto;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .model-info.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .model-info h3 {
+            margin-top: 0;
+            background: linear-gradient(to right, #5e17eb, #00e6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(5, 5, 26, 0.7);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            z-index: 100;
+        }
+        
+        .back-btn:hover {
+            background: rgba(94, 23, 235, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading 3D Assets...</div>
+    </div>
+    
+    <!-- Back Button -->
+    <a href="index.html" class="back-btn">
+        <span>←</span> Back to Home
+    </a>
+    
+    <!-- Main Showcase Container -->
+    <div id="showcase-container">
+        <!-- Canvas will be inserted here by Three.js -->
+        
+        <!-- UI Overlay -->
+        <div class="ui-overlay">
+            <!-- Model Selection Buttons -->
+            <div class="model-selector">
+                <button class="model-btn active" data-model="satellite">Satellite</button>
+                <button class="model-btn" data-model="planet">Planet</button>
+                <button class="model-btn" data-model="spaceship">Spaceship</button>
+                <button class="model-btn" data-model="rover">Rover</button>
+            </div>
+            
+            <!-- Model Info Panel -->
+            <div class="model-info" id="model-info">
+                <h3>Satellite Model</h3>
+                <p>An interactive 3D model of a communications satellite, showcasing our ability to create detailed space-themed assets with realistic materials and lighting.</p>
+                <p>Triangles: <span id="triangle-count">0</span></p>
+            </div>
+        </div>
+        
+        <!-- Performance Stats -->
+        <div class="stats">
+            <div>FPS: <span id="fps">0</span></div>
+            <div>Draw Calls: <span id="draw-calls">0</span></div>
+            <div>Memory: <span id="memory">0</span> MB</div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Performance settings for Three.js
+        const PERF_SETTINGS = {
+            pixelRatio: Math.min(1.5, window.devicePixelRatio || 1),
+            cameraFar: 100,
+            cameraNear: 0.1,
+            maxObjects: 100,
+            useLOD: true,
+            lodDistance: 20,
+            maxFPS: 60,
+            enableFrustumCulling: true,
+            simplifyMaterials: true
+        };
+        
+        // Store references to DOM elements
+        const showcaseContainer = document.getElementById('showcase-container');
+        const loadingScreen = document.getElementById('loading-screen');
+        const modelInfo = document.getElementById('model-info');
+        const fpsCounter = document.getElementById('fps');
+        const drawCallsCounter = document.getElementById('draw-calls');
+        const memoryCounter = document.getElementById('memory');
+        const triangleCounter = document.getElementById('triangle-count');
+        
+        // Three.js variables
+        let scene, camera, renderer, controls;
+        let currentModel = null;
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+        let lastFrameTime = 0;
+        
+        // Model definitions with metadata
+        const models = {
+            satellite: {
+                path: './assets/models/space_satellite.glb',
+                name: 'Satellite Model',
+                description: 'An interactive 3D model of a communications satellite, showcasing our ability to create detailed space-themed assets with realistic materials and lighting.',
+                position: new THREE.Vector3(0, 0, 0),
+                rotation: new THREE.Euler(0, 0, 0),
+                scale: new THREE.Vector3(1, 1, 1)
+            },
+            planet: {
+                path: './assets/models/planet.glb',
+                name: 'Planet Model',
+                description: 'A detailed 3D model of an exoplanet with atmospheric effects and terrain detail, demonstrating our capability to create immersive space environments.',
+                position: new THREE.Vector3(0, 0, 0),
+                rotation: new THREE.Euler(0, 0, 0),
+                scale: new THREE.Vector3(1.5, 1.5, 1.5)
+            },
+            spaceship: {
+                path: './assets/models/spaceship.glb',
+                name: 'Spaceship Model',
+                description: 'A futuristic spacecraft model with detailed textures and moving parts, showcasing our ability to create complex interactive 3D assets.',
+                position: new THREE.Vector3(0, 0, 0),
+                rotation: new THREE.Euler(0, 0, 0),
+                scale: new THREE.Vector3(0.7, 0.7, 0.7)
+            },
+            rover: {
+                path: './assets/models/rover.glb',
+                name: 'Mars Rover Model',
+                description: 'A detailed model of a Mars exploration rover with movable parts and realistic terrain interaction features.',
+                position: new THREE.Vector3(0, 0, 0),
+                rotation: new THREE.Euler(0, 0, 0),
+                scale: new THREE.Vector3(1, 1, 1)
+            }
+        };
+        
+        // Initialize Three.js scene
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x05051a);
+            
+            // Add fog for depth effect
+            scene.fog = new THREE.FogExp2(0x05051a, 0.025);
+            
+            // Create camera
+            camera = new THREE.PerspectiveCamera(
+                75, 
+                window.innerWidth / window.innerHeight, 
+                PERF_SETTINGS.cameraNear, 
+                PERF_SETTINGS.cameraFar
+            );
+            camera.position.set(0, 0, 5);
+            
+            // Create renderer with optimized settings
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: false,
+                powerPreference: 'high-performance',
+                alpha: false
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(PERF_SETTINGS.pixelRatio);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.shadowMap.enabled = false;
+            
+            // Enable frustum culling
+            renderer.sortObjects = PERF_SETTINGS.enableFrustumCulling;
+            
+            // Add canvas to DOM
+            showcaseContainer.prepend(renderer.domElement);
+            
+            // Add orbit controls
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = true;
+            controls.zoomSpeed = 1.0;
+            controls.rotateSpeed = 0.8;
+            controls.enablePan = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 10;
+            
+            // Add basic lighting for all models
+            addLighting();
+            
+            // Add background stars
+            addStars();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize);
+            
+            // Load initial model
+            loadModel('satellite');
+            
+            // Add model button event listeners
+            document.querySelectorAll('.model-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const modelType = btn.getAttribute('data-model');
+                    
+                    // Update button states
+                    document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Load selected model
+                    loadModel(modelType);
+                    
+                    // Show model info with animation
+                    updateModelInfo(modelType);
+                });
+            });
+            
+            // Start animation loop
+            animate(0);
+        }
+        
+        // Add stars to the background
+        function addStars() {
+            const starsGeometry = new THREE.BufferGeometry();
+            const starCount = 1000;
+            const positions = new Float32Array(starCount * 3);
+            const sizes = new Float32Array(starCount);
+            
+            for (let i = 0; i < starCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 100;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+                sizes[i] = Math.random() * 2;
+            }
+            
+            starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            starsGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+            
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.1,
+                transparent: true,
+                opacity: 0.8,
+                sizeAttenuation: true
+            });
+            
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+        }
+        
+        // Add lighting to the scene
+        function addLighting() {
+            // Ambient light for overall illumination
+            const ambientLight = new THREE.AmbientLight(0x333344, 0.5);
+            scene.add(ambientLight);
+            
+            // Directional light for shadows and definition
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            // Add a point light with color
+            const blueLight = new THREE.PointLight(0x0088ff, 1, 10);
+            blueLight.position.set(-5, 2, 3);
+            scene.add(blueLight);
+            
+            // Add a slight purple light on the other side
+            const purpleLight = new THREE.PointLight(0x5e17eb, 1, 10);
+            purpleLight.position.set(5, -2, -3);
+            scene.add(purpleLight);
+        }
+        
+        // Load a 3D model
+        function loadModel(modelType) {
+            const modelData = models[modelType];
+            
+            // Show loading screen
+            loadingScreen.style.opacity = '1';
+            loadingScreen.style.display = 'flex';
+            
+            // Remove previous model if it exists
+            if (currentModel) {
+                scene.remove(currentModel);
+                currentModel = null;
+            }
+            
+            // Create loader
+            const loader = new THREE.GLTFLoader();
+            
+            loader.load(
+                // Model path
+                modelData.path,
+                
+                // Success callback
+                function(gltf) {
+                    // Get the model
+                    const newModel = gltf.scene;
+                    
+                    // Set position, rotation, and scale
+                    newModel.position.copy(modelData.position);
+                    newModel.rotation.copy(modelData.rotation);
+                    newModel.scale.copy(modelData.scale);
+                    
+                    // Optimize model for performance
+                    optimizeModel(newModel);
+                    
+                    // Add to scene
+                    scene.add(newModel);
+                    currentModel = newModel;
+                    
+                    // Hide loading screen
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                    
+                    // Update model info
+                    updateModelInfo(modelType);
+                    
+                    // Count triangles
+                    let triangleCount = 0;
+                    newModel.traverse(function(child) {
+                        if (child.isMesh && child.geometry) {
+                            if (child.geometry.index !== null) {
+                                triangleCount += child.geometry.index.count / 3;
+                            } else {
+                                triangleCount += child.geometry.attributes.position.count / 3;
+                            }
+                        }
+                    });
+                    triangleCounter.textContent = Math.round(triangleCount).toLocaleString();
+                },
+                
+                // Progress callback
+                function(xhr) {
+                    const percent = Math.round((xhr.loaded / xhr.total) * 100);
+                    document.querySelector('.loading-text').textContent = 
+                        `Loading ${modelData.name}... ${isNaN(percent) ? '' : percent + '%'}`;
+                },
+                
+                // Error callback
+                function(error) {
+                    console.error('Error loading model:', error);
+                    loadingScreen.style.opacity = '0';
+                    
+                    // Create fallback model
+                    createFallbackModel(modelType);
+                }
+            );
+        }
+        
+        // Apply performance optimizations to the model
+        function optimizeModel(model) {
+            model.traverse(function(child) {
+                if (child.isMesh) {
+                    // Enable frustum culling
+                    child.frustumCulled = PERF_SETTINGS.enableFrustumCulling;
+                    
+                    // Compute bounding sphere for proper culling
+                    if (child.geometry) {
+                        child.geometry.computeBoundingSphere();
+                    }
+                    
+                    // Disable shadows for better performance
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                    
+                    // Simplify materials if needed
+                    if (PERF_SETTINGS.simplifyMaterials) {
+                        // Use MeshBasicMaterial for maximum performance
+                        const simpleMaterial = new THREE.MeshBasicMaterial({
+                            color: child.material.color || 0xffffff,
+                            map: child.material.map,
+                            transparent: child.material.transparent,
+                            opacity: child.material.opacity
+                        });
+                        
+                        child.material = simpleMaterial;
+                    }
+                }
+            });
+        }
+        
+        // Create a fallback model when loading fails
+        function createFallbackModel(modelType) {
+            const modelData = models[modelType];
+            let fallbackModel;
+            
+            switch(modelType) {
+                case 'satellite':
+                    fallbackModel = createSatellite();
+                    break;
+                case 'planet':
+                    fallbackModel = createPlanet();
+                    break;
+                case 'spaceship':
+                    fallbackModel = createSpaceship();
+                    break;
+                case 'rover':
+                    fallbackModel = createRover();
+                    break;
+                default:
+                    fallbackModel = createSatellite();
+            }
+            
+            // Set position, rotation, and scale
+            fallbackModel.position.copy(modelData.position);
+            fallbackModel.rotation.copy(modelData.rotation);
+            fallbackModel.scale.copy(modelData.scale);
+            
+            // Add to scene
+            scene.add(fallbackModel);
+            currentModel = fallbackModel;
+            
+            // Update model info
+            updateModelInfo(modelType);
+            
+            // Hide loading screen
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+        
+        // Create a simple satellite model
+        function createSatellite() {
+            const group = new THREE.Group();
+            
+            // Main body - box
+            const bodyGeometry = new THREE.BoxGeometry(1, 0.5, 2);
+            const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            group.add(body);
+            
+            // Solar panels
+            const panelGeometry = new THREE.BoxGeometry(3, 0.1, 1);
+            const panelMaterial = new THREE.MeshBasicMaterial({ color: 0x3355ff });
+            
+            const leftPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+            leftPanel.position.x = -2;
+            group.add(leftPanel);
+            
+            const rightPanel = new THREE.Mesh(panelGeometry, panelMaterial);
+            rightPanel.position.x = 2;
+            group.add(rightPanel);
+            
+            // Antenna
+            const antennaGeometry = new THREE.ConeGeometry(0.2, 1, 8);
+            const antennaMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+            const antenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
+            antenna.position.z = 1.5;
+            antenna.rotation.x = Math.PI / 2;
+            group.add(antenna);
+            
+            return group;
+        }
+        
+        // Create a simple planet model
+        function createPlanet() {
+            const group = new THREE.Group();
+            
+            // Planet sphere
+            const planetGeometry = new THREE.SphereGeometry(2, 32, 32);
+            const planetMaterial = new THREE.MeshBasicMaterial({ color: 0x2244aa });
+            const planet = new THREE.Mesh(planetGeometry, planetMaterial);
+            group.add(planet);
+            
+            // Moon
+            const moonGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const moonMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+            const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+            moon.position.set(3, 1, 0);
+            group.add(moon);
+            
+            return group;
+        }
+        
+        // Create a simple spaceship model
+        function createSpaceship() {
+            const group = new THREE.Group();
+            
+            // Body
+            const bodyGeometry = new THREE.ConeGeometry(1, 3, 16);
+            const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xdddddd });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.rotation.x = Math.PI / 2;
+            group.add(body);
+            
+            // Wings
+            const wingGeometry = new THREE.BoxGeometry(3, 0.1, 1);
+            const wingMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+            
+            const wings = new THREE.Mesh(wingGeometry, wingMaterial);
+            wings.position.z = -0.5;
+            group.add(wings);
+            
+            // Engines
+            const engineGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.5, 16);
+            const engineMaterial = new THREE.MeshBasicMaterial({ color: 0xff3333 });
+            
+            const leftEngine = new THREE.Mesh(engineGeometry, engineMaterial);
+            leftEngine.position.set(-0.8, 0, -1.5);
+            leftEngine.rotation.x = Math.PI / 2;
+            group.add(leftEngine);
+            
+            const rightEngine = new THREE.Mesh(engineGeometry, engineMaterial);
+            rightEngine.position.set(0.8, 0, -1.5);
+            rightEngine.rotation.x = Math.PI / 2;
+            group.add(rightEngine);
+            
+            return group;
+        }
+        
+        // Create a simple rover model
+        function createRover() {
+            const group = new THREE.Group();
+            
+            // Main body
+            const bodyGeometry = new THREE.BoxGeometry(2, 0.7, 3);
+            const bodyMaterial = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.y = 0.7;
+            group.add(body);
+            
+            // Wheels
+            const wheelGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.3, 16);
+            const wheelMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
+            
+            const wheelPositions = [
+                [-1, 0, 1],
+                [1, 0, 1],
+                [-1, 0, -1],
+                [1, 0, -1]
+            ];
+            
+            wheelPositions.forEach(pos => {
+                const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+                wheel.position.set(pos[0], pos[1], pos[2]);
+                wheel.rotation.z = Math.PI / 2;
+                group.add(wheel);
+            });
+            
+            // Antenna
+            const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 1.5, 8);
+            const antennaMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+            const antenna = new THREE.Mesh(antennaGeometry, antennaMaterial);
+            antenna.position.set(0, 1.5, 0);
+            group.add(antenna);
+            
+            return group;
+        }
+        
+        // Update model info panel
+        function updateModelInfo(modelType) {
+            const modelData = models[modelType];
+            const header = modelInfo.querySelector('h3');
+            const text = modelInfo.querySelector('p');
+            
+            header.textContent = modelData.name;
+            text.textContent = modelData.description;
+            
+            // Show model info with animation
+            modelInfo.classList.add('visible');
+        }
+        
+        // Window resize handler
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Animation loop
+        function animate(time) {
+            requestAnimationFrame(animate);
+            
+            // Frame rate limiting
+            if (PERF_SETTINGS.maxFPS < 60) {
+                const elapsed = time - lastFrameTime;
+                if (elapsed < 1000 / PERF_SETTINGS.maxFPS) return;
+                lastFrameTime = time - (elapsed % (1000 / PERF_SETTINGS.maxFPS));
+            }
+            
+            // Update controls for smooth camera movement
+            controls.update();
+            
+            // Rotate current model
+            if (currentModel) {
+                currentModel.rotation.y += 0.005;
+            }
+            
+            // Render scene
+            renderer.render(scene, camera);
+            
+            // Update stats
+            frameCount++;
+            const now = performance.now();
+            
+            if (now - lastFpsUpdate >= 1000) {
+                fpsCounter.textContent = Math.round(frameCount * 1000 / (now - lastFpsUpdate));
+                drawCallsCounter.textContent = renderer.info.render.calls;
+                memoryCounter.textContent = Math.round(performance.memory ? performance.memory.usedJSHeapSize / 1048576 : 0);
+                
+                frameCount = 0;
+                lastFpsUpdate = now;
+            }
+        }
+        
+        // Initialize everything when the page is loaded
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html> 

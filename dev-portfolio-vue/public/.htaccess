@@ -1,0 +1,26 @@
+# Handle Single Page Application routing
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# Set proper MIME types for font files
+<IfModule mod_mime.c>
+  AddType application/json .json
+  AddType application/font-woff .woff
+  AddType application/font-woff2 .woff2
+  AddType application/vnd.ms-fontobject .eot
+  AddType application/x-font-ttf .ttf
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Allow cross-origin requests for fonts and other assets
+<IfModule mod_headers.c>
+  <FilesMatch "\.(json|glb|gltf|bin|ttf|otf|eot|woff|woff2|svg)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule> 

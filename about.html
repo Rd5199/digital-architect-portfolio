@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Cosmic Web Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css?v=10">
+    <style>
+        .about-hero {
+            height: 60vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(5, 5, 26, 0.7), rgba(5, 5, 26, 0.9)),
+                        url('./assets/images/abstract-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+        }
+        
+        .about-hero-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 30px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .service-card {
+            background: rgba(14, 14, 38, 0.5);
+            border-radius: 15px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 23, 235, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(94, 23, 235, 0.2);
+        }
+        
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #5e17eb, #00e6ff);
+        }
+        
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #00e6ff;
+        }
+        
+        .service-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .service-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ccccff;
+            flex-grow: 1;
+        }
+        
+        .service-link {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #5e17eb, #00e6ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
+        }
+        
+        .service-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(94, 23, 235, 0.5);
+        }
+        
+        .team-section {
+            padding: 60px 20px;
+            background: rgba(8, 8, 30, 0.7);
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .team-member {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(14, 14, 38, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 23, 235, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+        
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 3px solid #5e17eb;
+            filter: saturate(1.2);
+        }
+        
+        .team-name {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .team-role {
+            font-size: 0.9rem;
+            color: #00e6ff;
+            margin-bottom: 15px;
+        }
+        
+        .team-bio {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #ccccff;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-link {
+            color: white;
+            transition: color 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .social-link:hover {
+            color: #00e6ff;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: white;
+            font-weight: 700;
+            background: linear-gradient(to right, #5e17eb, #00e6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .about-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .stats-section {
+            padding: 60px 20px;
+            background: rgba(5, 5, 26, 0.8);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: rgba(14, 14, 38, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 23, 235, 0.2);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #5e17eb, #00e6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: white;
+        }
+        
+        .nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            z-index: 1000;
+            background: rgba(5, 5, 26, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-logo-icon {
+            font-size: 1.8rem;
+            color: #00e6ff;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(to right, #5e17eb, #00e6ff);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #00e6ff;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: white;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                flex-direction: column;
+                background: rgba(5, 5, 26, 0.95);
+                padding: 20px;
+                gap: 20px;
+                transform: translateY(-200%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+        
+        .tech-section {
+            padding: 60px 20px;
+            background: rgba(5, 5, 26, 0.9);
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .tech-item {
+            background: rgba(14, 14, 38, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(94, 23, 235, 0.2);
+        }
+        
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00e6ff;
+        }
+        
+        .tech-name {
+            font-size: 0.9rem;
+            color: white;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #5e17eb, #00e6ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(94, 23, 235, 0.3);
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(94, 23, 235, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">
+            <span class="nav-logo-icon">🚀</span>
+            Cosmic Web Design
+        </a>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="about.html" class="nav-link active">About</a>
+            <a href="portfolio.html" class="nav-link">Portfolio</a>
+            <a href="services.html" class="nav-link">Services</a>
+            <a href="contact.html" class="nav-link">Contact</a>
+        </div>
+    </nav>
+    
+    <!-- About Hero Section with 3D Canvas -->
+    <section class="about-hero">
+        <canvas id="about-canvas" class="about-canvas"></canvas>
+        <div class="about-hero-content">
+            <h1 class="glitch" data-text="About Cosmic Web Design">About Cosmic Web Design</h1>
+            <p>We're a team of innovators creating immersive digital experiences that blur the lines between physical and virtual realities.</p>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section class="services-section">
+        <h2 class="section-title">Our Expertise</h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">🌐</div>
+                <h3 class="service-title">Web Development</h3>
+                <p class="service-description">
+                    We build responsive, user-friendly websites optimized for performance and search engines. Our development process ensures your site works flawlessly on all devices.
+                </p>
+                <a href="services.html#web-development" class="service-link">Learn More</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">📱</div>
+                <h3 class="service-title">App Development</h3>
+                <p class="service-description">
+                    From mobile apps to progressive web applications, we create intuitive digital products that provide value to your users across all platforms.
+                </p>
+                <a href="services.html#app-development" class="service-link">Learn More</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🎮</div>
+                <h3 class="service-title">3D Visualization</h3>
+                <p class="service-description">
+                    Leveraging WebGL and Three.js, we create immersive 3D experiences that showcase your products and services in an engaging, interactive way.
+                </p>
+                <a href="services.html#3d-visualization" class="service-link">Learn More</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3 class="service-title">UI/UX Design</h3>
+                <p class="service-description">
+                    Our design team crafts beautiful interfaces that connect with your audience, focusing on user experience and accessibility to drive engagement.
+                </p>
+                <a href="services.html#ui-ux-design" class="service-link">Learn More</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🚀</div>
+                <h3 class="service-title">Performance Optimization</h3>
+                <p class="service-description">
+                    We optimize your web applications for speed and performance, ensuring smooth experiences even with complex 3D content and animations.
+                </p>
+                <a href="services.html#performance-optimization" class="service-link">Learn More</a>
+            </div>
+            
+            <div class="service-card">
+                <div class="service-icon">🔍</div>
+                <h3 class="service-title">SEO & Analytics</h3>
+                <p class="service-description">
+                    Drive more traffic to your website with our SEO services. We implement analytics solutions to help you understand your audience and make data-driven decisions.
+                </p>
+                <a href="services.html#seo-analytics" class="service-link">Learn More</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <h2 class="section-title">Our Impact</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Projects Completed</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Happy Clients</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">5+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-number">99%</div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Team Section -->
+    <section class="team-section">
+        <h2 class="section-title">Meet Our Team</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <img src="https://source.unsplash.com/random/300x300/?portrait&1" alt="Team Member" class="team-photo">
+                <h3 class="team-name">Alex Johnson</h3>
+                <div class="team-role">Creative Director</div>
+                <p class="team-bio">
+                    Alex leads our creative team with over 10 years of experience in digital design and branding.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">🔗</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">📧</a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <img src="https://source.unsplash.com/random/300x300/?portrait&2" alt="Team Member" class="team-photo">
+                <h3 class="team-name">Samantha Lee</h3>
+                <div class="team-role">Lead Developer</div>
+                <p class="team-bio">
+                    Sam specializes in WebGL and 3D web applications, creating immersive digital experiences.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">🔗</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">📧</a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <img src="https://source.unsplash.com/random/300x300/?portrait&3" alt="Team Member" class="team-photo">
+                <h3 class="team-name">David Chen</h3>
+                <div class="team-role">UX Designer</div>
+                <p class="team-bio">
+                    David focuses on creating intuitive user experiences that balance aesthetics with functionality.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">🔗</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">📧</a>
+                </div>
+            </div>
+            
+            <div class="team-member">
+                <img src="https://source.unsplash.com/random/300x300/?portrait&4" alt="Team Member" class="team-photo">
+                <h3 class="team-name">Olivia Rodriguez</h3>
+                <div class="team-role">Project Manager</div>
+                <p class="team-bio">
+                    Olivia ensures our projects are delivered on time and exceed client expectations.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link">🔗</a>
+                    <a href="#" class="social-link">📱</a>
+                    <a href="#" class="social-link">📧</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technologies Section -->
+    <section class="tech-section">
+        <h2 class="section-title">Technologies We Use</h2>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <div class="tech-icon">🌐</div>
+                <div class="tech-name">HTML5</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🎨</div>
+                <div class="tech-name">CSS3</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">📜</div>
+                <div class="tech-name">JavaScript</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">⚛️</div>
+                <div class="tech-name">React</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🔄</div>
+                <div class="tech-name">Vue.js</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🎮</div>
+                <div class="tech-name">Three.js</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🖥️</div>
+                <div class="tech-name">WebGL</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">📱</div>
+                <div class="tech-name">React Native</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🛠️</div>
+                <div class="tech-name">Node.js</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">💾</div>
+                <div class="tech-name">MongoDB</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🔒</div>
+                <div class="tech-name">Firebase</div>
+            </div>
+            
+            <div class="tech-item">
+                <div class="tech-icon">🌟</div>
+                <div class="tech-name">GSAP</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top" id="back-to-top">↑</a>
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Mobile Navigation Toggle
+        document.querySelector('.hamburger').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+            document.querySelectorAll('.hamburger span').forEach(function(span) {
+                span.classList.toggle('active');
+            });
+        });
+        
+        // Back to Top Button
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 500) {
+                document.getElementById('back-to-top').classList.add('visible');
+            } else {
+                document.getElementById('back-to-top').classList.remove('visible');
+            }
+        });
+        
+        document.getElementById('back-to-top').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Simple 3D Background for About Page
+        const initThreeScene = () => {
+            // Get canvas element
+            const canvas = document.getElementById('about-canvas');
+            
+            // Create scene, camera, and renderer
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.z = 5;
+            
+            const renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas, 
+                alpha: true,
+                antialias: false,
+                powerPreference: 'high-performance'
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            
+            // Create particles
+            const particleCount = 500;
+            const particles = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 10;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+            }
+            
+            particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x00e6ff,
+                size: 0.05,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            const particleSystem = new THREE.Points(particles, particleMaterial);
+            scene.add(particleSystem);
+            
+            // Add some floating objects
+            const sphereGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x5e17eb });
+            
+            const spheres = [];
+            for (let i = 0; i < 10; i++) {
+                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+                sphere.position.set(
+                    (Math.random() - 0.5) * 8,
+                    (Math.random() - 0.5) * 8,
+                    (Math.random() - 0.5) * 8
+                );
+                
+                // Store original position and a random speed
+                sphere.userData = {
+                    originalPosition: sphere.position.clone(),
+                    speed: Math.random() * 0.01 + 0.005,
+                    phase: Math.random() * Math.PI * 2
+                };
+                
+                scene.add(sphere);
+                spheres.push(sphere);
+            }
+            
+            // Window resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Rotate particle system slowly
+                particleSystem.rotation.y += 0.0005;
+                particleSystem.rotation.x += 0.0002;
+                
+                // Move spheres in a circular path
+                const time = Date.now() * 0.001;
+                spheres.forEach(sphere => {
+                    const { originalPosition, speed, phase } = sphere.userData;
+                    
+                    sphere.position.x = originalPosition.x + Math.sin(time * speed + phase) * 1.5;
+                    sphere.position.y = originalPosition.y + Math.cos(time * speed + phase) * 1.5;
+                    sphere.position.z = originalPosition.z + Math.sin(time * speed * 0.5 + phase) * 1.5;
+                });
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+        };
+        
+        // Initialize Three.js scene when the page is loaded
+        window.addEventListener('load', initThreeScene);
+    </script>
+</body>
+</html> 

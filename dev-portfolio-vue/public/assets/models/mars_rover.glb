@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keyword" content="G. Allen Gary, Center for Space Plasma and Aeronomic Research, The University of Alabama in Huntsville, ">    <meta name="description" content="3D Resources web application">
+    <meta name="author" content="BSG Web Group">
+        <title>Home | 3D Resources</title>
+    <link rel="shortcut icon" href="https://nasa3d.arc.nasa.gov/assets/bsg/templates/bootstrap3/images/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="https://nasa3d.arc.nasa.gov/min/?b=assets&f=bsg/templates/bootstrap3/css/bootstrap/bootstrap.css,bsg/templates/bootstrap3/css/jquery/ui/jquery-ui-1.10.3.custom.css,bsg/templates/bootstrap3/css/bsg-font-style.css,bsg/templates/bootstrap3/css/bsg-print.css,bsg/templates/bootstrap3/css/bsg-table.css,bsg/templates/bootstrap3/css/bsg-structure-style.css,bsg/templates/bootstrap3/css/bsg-menu.css,bsg/templates/bootstrap3/css/client-messages.css,bsg/templates/bootstrap3/css/devices/e-phone.css,bsg/templates/bootstrap3/css/devices/d-tablet.css,bsg/templates/bootstrap3/css/devices/c-small-desktop.css,bsg/templates/bootstrap3/css/devices/b-desktop.css,bsg/templates/bootstrap3/css/devices/a-large-desktop.css,bsg/templates/bootstrap3/css/form/formalize/bsg.bootstrap.formalize.css,bsg/templates/bootstrap3/css/form/bsg.form-global.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.date.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.user-lookup.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.one-to-many.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.table-list.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.lookup.css,bsg/templates/bootstrap3/css/form/bsg-form-widgets/bsg.keywords.css,css/global.css,css/block-grid.css,css/resources.css,css/detail.css,css/visualization.css">
+    <script type="text/javascript" src="https://nasa3d.arc.nasa.gov/min/?b=assets&f=bsg/templates/bootstrap3/js/jquery/jquery.min.js,bsg/templates/bootstrap3/js/jquery/jquery.outside.js,bsg/templates/bootstrap3/js/bootstrap/bootstrap.min.js,bsg/templates/bootstrap3/js/jquery/ui/jquery-ui-1.10.3.custom.min.js,bsg/templates/bootstrap3/js/bsg-bootstrap-structure.js,bsg/templates/bootstrap3/js/bsg.logout.js,bsg/js/bsg_plugin.js,bsg/js/bsg-table/bsg-table.js,bsg/js/jquery/jquery.formalize.min.js,bsg/templates/bootstrap3/js/bsg-form/bsg.form-global.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.date.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.select.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.user-lookup.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.one-to-many.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.lookup.js,bsg/templates/bootstrap3/js/bsg-form/bsg-form-widgets/bsg.keywords.js,js/app-global.js,js/popper.min.js,js/tippy-bundle.umd.min.js"></script><script type="module" src="https://nasa3d.arc.nasa.gov/assets/js/model-viewer.min.js"></script>
+<script type="module" src="https://nasa3d.arc.nasa.gov/assets/js/stl-viewer.js"></script>
+<script type="module" src="https://nasa3d.arc.nasa.gov/assets/js/detail.js"></script>
+    <script type="text/javascript">
+      var app_home = "https://nasa3d.arc.nasa.gov/";
+      var ajax_home = app_home + "ajax/";
+      var environment_status = "production";
+      var bsg_app_name = "3D Resources";
+    </script>
+        <script id="_fed_an_js_tag" type="text/javascript" src="https://bsgapps.arc.nasa.gov/ga/?agency=NASA&sub-agency=ARC&vcto=12"></script>
+    <script id="parsely-cfg" src="https://cdn.parsely.com/keys/nasa3d.arc.nasa.gov/p.js" async="" defer=""></script>
+      </head>
+  <body class="bsg no-js production bsg-browser-chrome bsg-bootstrap3" onload='bsg_structure_resize()'>
+    <div id="bsg-bootstrap-layout-top-wrapper">
+      <div id="bsg-bootstrap-layout-top-wrapper-inner">
+        <div class="bsg-branding-section">
+          <div class="bsg-branding-section-inner">
+            <div class="bsg-branding-home-link-wrapper"><a href="https://nasa3d.arc.nasa.gov/" class="bsg-branding-home-link">3D Resources</a></div>
+            <div class="bsg-client-menu logged-in">
+    <span class="bsg-username-link" href="#" data-toggle="dropdown">
+        <div class="bsg-username-link-wrapper">
+            <span class="username-wrapper bsg-table-cell"></span>
+            <span class="navbar-toggle-wrapper bsg-table-cell">
+                <button type="button" id="bsg-navbar-toggle">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </span>
+        </div>
+    </span>
+    <div class="bsg-client-menu-dropdown">
+        <div class="bsg-client-app-menu">
+            
+<ul>
+	<li class="level-0 parent first"><span class="level-0 parent  menu-no-parent-id-global-menu"><a href="https://nasa3d.arc.nasa.gov/">Resources</a></span>
+	<ul id="submenu-global-menu" >
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-global-menu-1"><a href="https://nasa3d.arc.nasa.gov/models">3D Models</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-global-menu-5"><a href="https://nasa3d.arc.nasa.gov/models/printable">3D Printing</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-global-menu-2"><a href="https://nasa3d.arc.nasa.gov/images">Images and Textures</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-global-menu-3"><a href="https://nasa3d.arc.nasa.gov/visualizations">Visualizations</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent"><span class="level-0 parent  menu-no-parent-id-global-menu-20 nolink">Collections</span>
+	<ul id="submenu-global-menu-20" >
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-20-global-menu-21"><a href="https://nasa3d.arc.nasa.gov/search/lunar">Lunar Models</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-20-global-menu-22"><a href="https://nasa3d.arc.nasa.gov/search/mars">Mars Models</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent"><span class="level-0 parent  menu-no-parent-id-global-menu-header-info nolink">Information</span>
+	<ul id="submenu-global-menu-header-info" >
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-header-info-global-menu-4"><a href="https://nasa3d.arc.nasa.gov/credits">Contributors</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-header-info-global-menu-10"><a href="https://nasa3d.arc.nasa.gov/credits/news">3D in the News</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent last"><span class="level-0 parent  menu-no-parent-id-global-menu-6 nolink">Related Links</span>
+	<ul id="submenu-global-menu-6" >
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-6-global-menu-15"><a href="http://science.nasa.gov/" target="_blank">science.nasa.gov</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-16"><a href="https://eclipse2017.nasa.gov/3d-printable-pinhole-projectors" target="_blank">3D Printable Pinhole Projectors</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-24"><a href="https://trek.nasa.gov/" target="_blank">NASA Solar System Treks</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-13"><a href="https://trek.nasa.gov/mars/" target="_blank">NASA Mars Trek</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-12"><a href="https://trek.nasa.gov/vesta/" target="_blank">NASA Vesta Trek</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-11"><a href="https://eyes.nasa.gov/" target="_blank">NASA's Eyes</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-7"><a href="http://3dprint.nih.gov/" target="_blank">National Institutes of Health 3D Print</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-8"><a href="https://nasa3d.arc.nasa.gov/assets/static/HorowitzSchultz2014.pdf" target="_blank">Printing Space: Using 3D Printing</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-14"><a href="https://eos.org/articles/3-d-models-put-scientists-students-in-touch-with-planets" target="_blank">3D Models Put Students in Touch with Planets</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-6-global-menu-23"><a href="https://www.jpl.nasa.gov/infographics/infographic.view.php?id=11359" target="_blank">JPL Infographics - SLS:BIG</a></span></li>
+	</ul>
+	</li>
+</ul>
+        </div>
+        <div class="bsg-client-app-global-menu">
+            <ul class="list-unstyled" role="menu" aria-labelledby="dropdownMenu">
+
+                
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+              <div id="bsg-main-content-wrapper">
+                <div id="bsg-main-content-wrapper-inner">
+
+
+                                      <div id="bsg-sidebar-wrapper">
+                      <div id="bsg-sidebar-wrapper-inner">
+                        <div id="bsg-sidebar-to-pin">
+                          <div id="bsg-sidebar-right-border"></div>
+                          <div id="bsg-side-menu">
+                            <div id="bsg-side-menu-inner">
+                              <div id="bsg-side-menu-real-size">
+                              <nav class="bsg-site-navigation">
+                                
+<ul class="nav level-0">
+	<li class="level-0 parent first"><span class="level-0 parent  menu-no-parent-id-global-menu"><a href="https://nasa3d.arc.nasa.gov/">Resources</a></span>
+	<ul id="submenu-global-menu"  class="nav level-1">
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-global-menu-1"><a href="https://nasa3d.arc.nasa.gov/models">3D Models</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-global-menu-5"><a href="https://nasa3d.arc.nasa.gov/models/printable">3D Printing</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-global-menu-2"><a href="https://nasa3d.arc.nasa.gov/images">Images and Textures</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-global-menu-3"><a href="https://nasa3d.arc.nasa.gov/visualizations">Visualizations</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent"><span class="level-0 parent  menu-no-parent-id-global-menu-20 nolink">Collections</span>
+	<ul id="submenu-global-menu-20"  class="nav level-1">
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-20-global-menu-21"><a href="https://nasa3d.arc.nasa.gov/search/lunar">Lunar Models</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-20-global-menu-22"><a href="https://nasa3d.arc.nasa.gov/search/mars">Mars Models</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent"><span class="level-0 parent  menu-no-parent-id-global-menu-header-info nolink">Information</span>
+	<ul id="submenu-global-menu-header-info"  class="nav level-1">
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-header-info-global-menu-4"><a href="https://nasa3d.arc.nasa.gov/credits">Contributors</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-header-info-global-menu-10"><a href="https://nasa3d.arc.nasa.gov/credits/news">3D in the News</a></span></li>
+	</ul>
+	</li>
+	<li class="level-0 parent last"><span class="level-0 parent  menu-no-parent-id-global-menu-6 nolink">Related Links</span>
+	<ul id="submenu-global-menu-6"  class="nav level-1">
+		<li class="level-1 only-child first"><span class="level-1 only-child  menu-global-menu-6-global-menu-15"><a href="http://science.nasa.gov/" target="_blank">science.nasa.gov</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-16"><a href="https://eclipse2017.nasa.gov/3d-printable-pinhole-projectors" target="_blank">3D Printable Pinhole Projectors</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-24"><a href="https://trek.nasa.gov/" target="_blank">NASA Solar System Treks</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-13"><a href="https://trek.nasa.gov/mars/" target="_blank">NASA Mars Trek</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-12"><a href="https://trek.nasa.gov/vesta/" target="_blank">NASA Vesta Trek</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-11"><a href="https://eyes.nasa.gov/" target="_blank">NASA's Eyes</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-7"><a href="http://3dprint.nih.gov/" target="_blank">National Institutes of Health 3D Print</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-8"><a href="https://nasa3d.arc.nasa.gov/assets/static/HorowitzSchultz2014.pdf" target="_blank">Printing Space: Using 3D Printing</a></span></li>
+		<li class="level-1 only-child"><span class="level-1 only-child  menu-global-menu-6-global-menu-14"><a href="https://eos.org/articles/3-d-models-put-scientists-students-in-touch-with-planets" target="_blank">3D Models Put Students in Touch with Planets</a></span></li>
+		<li class="level-1 only-child last"><span class="level-1 only-child  menu-global-menu-6-global-menu-23"><a href="https://www.jpl.nasa.gov/infographics/infographic.view.php?id=11359" target="_blank">JPL Infographics - SLS:BIG</a></span></li>
+	</ul>
+	</li>
+</ul>
+                              </nav>
+                                                            </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  
+                  <div id="bsg-main-section">
+                    <div id="bsg-main-section-inner">
+                      <div id="bsg-main-section-content">
+                        <div id="bsg-main-section-content-inner">
+                                                <div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+       <div class="row">
+       <div class="col-md-6">
+         <div class="page-title">NASA 3D Resources</div>
+       </div>
+       <div class="col-md-6">
+                      <div class="counter asset-detail-title">Currently hosting <span class="hosted-models-count">378</span> models</div>
+                 </div>
+       </div>
+      <div class="row">
+        <div class="home-page-wrapper col-sm-12">
+          <div class="home-page-body">
+
+            <div class="nasa3d-content">
+
+              
+              <div class="row">
+                                  <div class="nasa3d-content-main col-xs-12 col-md-9">
+                    <div class="row">
+    <div class="col-xs-12">
+        <div class="text-block">
+            <p>
+                Welcome to the 3D Resources site! Here you'll find a growing
+                collection of 3D models, textures, and images from inside NASA.
+                All of these resources are free to download and use.
+                Please read the <a href="http://www.nasa.gov/audience/formedia/features/MP_Photo_Guidelines.html">usage guidelines</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="search-box">
+  <div class="input-group">
+    <label class="sr-only" for="search-field">Search</label>
+    <input id="search-field" type="text" class="form-control" placeholder="Search Models and Images">
+    <span class="input-group-btn">
+        <button id="search-button" class="btn btn-default" type="button">
+            <span alt="Search" title="Search" class="glyphicon glyphicon-search"></span>
+        </button>
+    </span>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  var execute_search = function() {
+    var search_string = encodeURIComponent($('#search-field')[0].value.replace(/[^0-9A-Za-z\._\-\s]/g, ''));
+    var site_url = 'https://nasa3d.arc.nasa.gov/search';
+    var type = encodeURIComponent('');
+    var location = site_url + '/' + search_string + '/' + type;
+
+    if (search_string.length > 0) {
+      window.location = location;
+    }
+  }
+
+  $('#search-field').val($('#search_term').text()).keypress(function(e) {
+    if (e.which === 13) {
+      execute_search();
+    }
+  }).select();
+
+  $('#search-button').click(function(e) {
+    execute_search();
+  });
+});
+</script>
+    </div>
+</div>
+
+<div class="row">
+    <div class="gallery-link-block col-xs-12 col-md-6">
+        <a href="https://nasa3d.arc.nasa.gov/models">
+            <img alt="3D Models" title="JSC Mission Control Room" src="https://nasa3d.arc.nasa.gov/shared_assets/thumbnails/jscmiscon1-room/428x321">
+            <div class="absolute-label">3D Models</div>
+            <!--These models are for anybody that uses a 3D software package.
+            Most of the models are in the common .3ds format, which can be read by
+            most 3D programs. Some models, however, are in their original .lwo
+            or Blender formats.-->
+        </a>
+    </div>
+    <div class="gallery-link-block col-xs-12 col-md-6">
+        <a href="https://nasa3d.arc.nasa.gov/images">
+            <img alt="Images and Textures" title="Lunar Crater - Apollo 8" src="https://nasa3d.arc.nasa.gov/shared_assets/thumbnails/as08-12-2052/428x321">
+            <div class="absolute-label">Images and Textures</div>
+            <!--The images and textures here are provided in .jpg and .tif formats
+            in their original resolutions. No special software is required to
+            view or use these files.-->
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="gallery-link-block col-xs-12 col-md-6">
+        <a href="https://nasa3d.arc.nasa.gov/visualizations">
+            <img alt="Visualizations" title="Eta Carinae Homunculus Nebula in 3D" src="assets/images/vis-eta-carinae-homunculus.png">
+        <div class="absolute-label">Visualizations</div>
+        </a>
+    </div>
+    <div class="gallery-link-block col-xs-12 col-md-6">
+        <a href="https://nasa3d.arc.nasa.gov/credits">
+        <img alt="Credits" title="Apollo Bootprint" src="https://nasa3d.arc.nasa.gov/assets/images/home-credits-apollo-bootprint-428x321.jpg">
+        <div class="absolute-label">Contributors</div>
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="page-title">Meet a Contributor</div>
+    </div>
+    <div class="col-xs-12 col-md-4" style="display: flex;justify-content: center;">
+        <a href="https://nasa3d.arc.nasa.gov/contributor?id=47">
+            <img
+                style="max-width: 100%; max-height: 300px; border: 1px solid gray;box-shadow: 1px 2px 7px grey;"
+                src="https://nasa3d.arc.nasa.gov/shared_assets/author/220331040347"
+            >
+        </a>
+    </div>
+    <div class="col-xs-12 col-md-8">
+        <h2 style="margin: 8px 2px;">William Keeter, DMI/NASA</h2>
+        <p>
+            A creative with a BFA from the University of South Carolina. Originally, worked for a web start-up and then a few state agencies as an artist, designer and interface developer. Since 2007, I've supported NASA Headquarters as a multimedia producer creating both digital and print material. Currently, I'm the manager of the HQ printing and design office. 
+
+Personally, for the last decade, I've been p...
+            <h4 style="position: relative;float: right;">
+                <a href="https://nasa3d.arc.nasa.gov/contributor?id=47">Read More</a>
+            </h4>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <hr>
+        <div class="text-block">
+            <p>
+                Our goal is to provide a comprehensive repository for 3D models,
+                images, textures, and visualizations. We offer these assets for
+                your use for free and without copyright. We recognize that the site is
+                only as good as its contributors and thank them kindly.
+            </p>
+            <p>
+                We welcome feedback and comments.
+                Tell us how you're using our models and let us know what you think by emailing
+                <a href="mailto:arc-special-proj@lists.nasa.gov">arc-special-proj@lists.nasa.gov</a>
+            </p>
+        </div>
+    </div>
+</div>
+                  </div>
+                  <div class="nasa3d-content-right col-xs-12 col-md-3">
+                    <div class="page-title">Featured</div>
+
+<div class="right-side-asset paper">
+    <div class="right-side-asset-image-container">
+        <a href="https://nasa3d.arc.nasa.gov/detail/gateway">
+            <img alt="Gateway Lunar Space Station" title="Gateway Lunar Space Station" src="https://nasa3d.arc.nasa.gov/shared_assets/thumbnails/gateway/428x321">
+        </a>
+    </div>
+    <div class="right-side-asset-metadata">
+        <span class="header">Gateway Lunar Space Station</span>
+        <span class="metadata">Added August 15, 2024</span>
+
+        <span>Author/Origin: NASA's Gateway Program Office</span>
+        <span>Mission: <a href="https://www.nasa.gov/mission/gateway/">Gateway</a></span>    </div>
+</div>
+<div class="page-title">Latest</div>
+
+<div class="right-side-asset paper">
+    <div class="right-side-asset-image-container">
+        <a href="https://nasa3d.arc.nasa.gov/detail/Full-Solar-Corona-Model">
+            <img alt="Full Solar Corona Model" title="Full Solar Corona Model" src="https://nasa3d.arc.nasa.gov/shared_assets/models/CoronalLoopModel25.jpg">
+        </a>
+    </div>
+    <div class="right-side-asset-metadata">
+        <span class="header">Full Solar Corona Model</span>
+        <span class="metadata">Added December 18, 2024</span>
+
+        <span>Author/Origin: G. Allen Gary, Center for Space Plasma and Aeronomic Research, The University of Alabama in Huntsville</span>
+            </div>
+</div>
+                  </div>
+                              </div>
+
+                          </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span style="display: none;" id="search_term"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+    <div id ="bsg-footer-section">
+      <div id ="bsg-footer-section-inner">
+                    <div class="row bsg-footer-bottom-half">
+          <div class="col-xs-12">
+            <nav id="footer-contacts-wrapper">
+    <ul id="footer-contact-list">
+
+                    <li class="privacy">
+
+            <a class="contact-link" target="_blank" href="https://www.nasa.gov/privacy/">Privacy Policy</a>
+            </li>
+                    <li class="rno">
+
+            <span class="contact-label">NASA Official:&nbsp;</span>Brandon Brinkman
+            </li>
+                    <li class="Feedback">
+
+            <a class="contact-link"  href="/feedback">Feedback</a>
+            </li>
+                    <li class="last-updated">
+
+            <span class="contact-label">Updated:&nbsp;</span>May 18, 2025
+            </li>
+                    <li class="About-NASA">
+
+            <a class="contact-link"  href="https://www.nasa.gov/about/">About NASA</a>
+            </li>
+                    <li class="Accessibility">
+
+            <a class="contact-link"  href="https://www.nasa.gov/accessibility/">Accessibility</a>
+            </li>
+                    <li class="FOIA">
+
+            <a class="contact-link"  href="https://www.nasa.gov/foia/">FOIA</a>
+            </li>
+                    <li class="FEAR">
+
+            <a class="contact-link"  href="https://www.nasa.gov/odeo/no-fear-act/">No FEAR Act</a>
+            </li>
+                    <li class="Vulnerability">
+
+            <a class="contact-link"  href="https://www.nasa.gov/vulnerability-disclosure-policy/">Vulnerability Disclosure Policy</a>
+            </li>
+        
+    </ul>
+</nav>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </body>
+</html>

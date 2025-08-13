@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #121212;
+            color: white;
+        }
+        button {
+            background: #6e44ff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+        #section1 {
+            background: #333;
+        }
+        #section2 {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center; padding: 20px;">
+        <h1>Button Test</h1>
+        <button onclick="scrollToSection('section1')">Go to Section 1</button>
+        <button onclick="scrollToSection('section2')">Go to Section 2</button>
+    </div>
+
+    <div id="section1" class="section">
+        <p>Section 1</p>
+    </div>
+
+    <div id="section2" class="section">
+        <p>Section 2</p>
+    </div>
+
+    <script>
+        function scrollToSection(sectionId) {
+            console.log(`Scrolling to ${sectionId}`);
+            const section = document.getElementById(sectionId);
+            if (section) {
+                console.log('Found section, scrolling...');
+                section.scrollIntoView({behavior: 'smooth'});
+            } else {
+                console.error(`Section #${sectionId} not found`);
+            }
+        }
+    </script>
+</body>
+</html> 

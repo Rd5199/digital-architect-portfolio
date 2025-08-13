@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Web Development - Fallback Experience</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #0a0a18;
+            --light-text: #ffffff;
+            --primary-color: #5c25e8;
+            --secondary-color: #00e6ff;
+            --accent-color: #ff3366;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        a:hover {
+            color: var(--primary-color);
+        }
+        
+        button {
+            background: var(--primary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+        
+        button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 230, 255, 0.3);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .header {
+            padding: 2rem 0;
+            text-align: center;
+        }
+        
+        .logo {
+            max-width: 120px;
+            margin-bottom: 1rem;
+        }
+        
+        .warning-banner {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 1rem;
+            margin-bottom: 3rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .section {
+            padding: 5rem 0;
+        }
+        
+        .card {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(94, 23, 235, 0.2);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(94, 23, 235, 0.2);
+            border-color: rgba(94, 23, 235, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+        
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .footer {
+            background: rgba(5, 5, 15, 0.8);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer a {
+            margin: 0 1rem;
+        }
+        
+        .cta {
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--light-text);
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 230, 255, 0.3);
+        }
+        
+        .spacer {
+            height: 4rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 3rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <img src="./assets/images/logo-light.png" alt="Cosmic Web Development" class="logo" onerror="this.onerror=null; this.src='./assets/images/logo-light.svg'; if(console) console.log('Fallback to SVG logo');">
+            <h1>Cosmic Web <span class="gradient-text">Development</span></h1>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="warning-banner">
+            <h2>Simple Experience Mode</h2>
+            <p>Your browser doesn't support our immersive 3D experience or it timed out while loading. 
+            We're showing you our simplified version instead.</p>
+        </div>
+        
+        <section class="section">
+            <h2 class="text-center mb-2">Web Development <span class="gradient-text">Beyond Earth</span></h2>
+            <p class="text-center mb-2">Creating immersive digital experiences that explore the boundaries of technology, just as NASA explores the boundaries of space.</p>
+            
+            <div class="spacer"></div>
+            
+            <div class="grid grid-3">
+                <div class="card">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Fast Performance</h3>
+                    <p>Our websites are optimized for speed and efficiency, ensuring your visitors have a smooth experience.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="feature-icon">🌌</div>
+                    <h3>Cosmic Design</h3>
+                    <p>Beautiful, custom designs that stand out from the crowd and reflect your brand's unique identity.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="feature-icon">💻</div>
+                    <h3>Responsive</h3>
+                    <p>Fully responsive websites that look great on all devices, from desktops to mobile phones.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <h2 class="text-center mb-2">Our <span class="gradient-text">Services</span></h2>
+            
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>Custom Web Development</h3>
+                    <p>We build fully custom websites tailored to your specific needs and goals. Our development process is focused on creating scalable, maintainable code that can grow with your business.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Interactive Experiences</h3>
+                    <p>We create engaging interactive experiences that captivate your audience. From 3D visualizations to data dashboards, we make your web presence memorable.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>E-commerce Solutions</h3>
+                    <p>Launch your online store with a custom e-commerce solution that's easy to manage and provides a seamless shopping experience for your customers.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Performance Optimization</h3>
+                    <p>We optimize your existing website for speed and search engines, ensuring fast load times and better visibility online.</p>
+                </div>
+            </div>
+        </section>
+        
+        <div class="cta">
+            <h2 class="mb-2">Ready to <span class="gradient-text">Launch</span> Your Project?</h2>
+            <a href="showcase.html" class="btn">Enter Showcase</a>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2023 Cosmic Web Development. All rights reserved.</p>
+            <div class="spacer"></div>
+            <a href="#">Home</a>
+            <a href="#">Services</a>
+            <a href="#">Portfolio</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
+
+    <script>
+        // You can try to redirect back to the main experience after a while
+        document.addEventListener('DOMContentLoaded', function() {
+            const tryAgainBtn = document.querySelector('.btn');
+            if (tryAgainBtn) {
+                tryAgainBtn.addEventListener('click', function(e) {
+                    // Check if it's the showcase button
+                    if (e.target.getAttribute('href') === 'showcase.html') {
+                        // Redirect to index with a flag to try a lighter version
+                        e.preventDefault();
+                        window.location.href = 'index.html?light=true';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,3 @@
+This is a placeholder for the space_satellite.glb file.
+Since GLB files are binary 3D model files, a real GLB file can't be created with text.
+The application will fall back to creating a simple 3D model programmatically when it can't load this file. 

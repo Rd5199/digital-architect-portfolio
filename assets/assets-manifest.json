@@ -1,0 +1,23 @@
+{
+    "version": "1.0",
+    "models": [
+        {
+            "id": "space_skybox",
+            "path": "assets/models/deep_space_skybox.glb",
+            "description": "Space skybox environment",
+            "type": "skybox"
+        },
+        {
+            "id": "satellite",
+            "path": "assets/models/space_satellite.glb",
+            "description": "Satellite model",
+            "type": "object"
+        }
+    ],
+    "textures": [],
+    "discoveryPaths": [
+        "./assets/models/",
+        "./models/",
+        "./assets/"
+    ]
+} 

@@ -1,0 +1,229 @@
+/* Add custom cursor styles and interactive effects */
+
+/* Hide default cursor when custom cursor is active */
+body.custom-cursor {
+  cursor: none !important;
+}
+
+/* Custom cursor elements */
+.cursor-dot {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s ease;
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.5);
+}
+
+.cursor-follower {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.3s cubic-bezier(0.75, -0.27, 0.3, 1.33);
+}
+
+/* Active state for interactive elements */
+.cursor-dot.cursor-active {
+  transform: scale(0.5);
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.cursor-follower.cursor-active {
+  transform: scale(1.5);
+  background-color: rgba(0, 200, 255, 0.1);
+  border-color: rgba(0, 200, 255, 0.5);
+}
+
+/* Button glow effect */
+.btn-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0, 200, 255, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Enhanced button styles */
+.control-btn, .cta-button a, .section-nav-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease !important;
+}
+
+.control-btn:after, .cta-button a:after, .section-nav-btn:after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.control-btn:hover:after, .cta-button a:hover:after, .section-nav-btn:hover:after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Add subtle glow to interactive elements */
+.control-btn, .cta-button a, .section-nav-btn, .scroll-indicator {
+  box-shadow: 0 0 10px rgba(0, 100, 255, 0.15);
+  transition: all 0.3s ease, box-shadow 0.3s ease;
+}
+
+.control-btn:hover, .cta-button a:hover, .section-nav-btn:hover, .scroll-indicator:hover {
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.4);
+}
+
+/* Particle effect for mouse trail */
+.mouse-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: rgba(0, 200, 255, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* Enhanced scroll indicator */
+.scroll-indicator {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  z-index: 50;
+}
+
+.scroll-indicator:hover {
+  opacity: 1;
+}
+
+.scroll-indicator-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.scroll-arrow {
+  width: 30px;
+  height: 30px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s infinite;
+}
+
+.scroll-arrow:after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(255, 255, 255, 0.8);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.8);
+  transform: rotate(45deg) translateY(-3px);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}
+
+/* Enhanced loading indicator with progress */
+.loading-progress {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.loading-progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #5c25e8, #00e6ff);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.loading-percent {
+  position: absolute;
+  top: -25px;
+  right: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.loading-info {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.8;
+  width: 80%;
+  max-width: 600px;
+  z-index: 1001;
+}
+
+/* Mobile-friendly adjustments */
+@media (max-width: 768px) {
+  .cursor-dot, .cursor-follower {
+    display: none; /* Hide custom cursor on mobile */
+  }
+  
+  .control-btn, .cta-button a {
+    padding: 12px 20px; /* Larger touch targets */
+  }
+  
+  .loading-progress {
+    width: 80%;
+    max-width: 300px;
+  }
+} 

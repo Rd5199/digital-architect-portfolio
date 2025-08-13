@@ -1,0 +1,1077 @@
+/* Base Styles for Cosmic Web Design */
+:root {
+  --primary-color: #5e17eb;
+  --secondary-color: #00e6ff;
+  --dark-bg: #05051a;
+  --light-text: #ffffff;
+  --accent-color: #ff3366;
+  --transition-speed: 0.3s;
+  --bg-color: #0a0a18;
+  --bg-lighter: #12122e;
+  --bg-darker: #050510;
+  --text-white: #f1f1f9;
+  --text-light: #c0c0d9;
+  --text-muted: #8989a0;
+  --accent-primary: #5c25e8;
+  --accent-secondary: #00e6ff;
+  --accent-tertiary: #ff3e6b;
+  --overlay-fill: rgba(10, 10, 24, 0.85);
+  --highlight-color: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  
+  /* Deep Space Palette */
+  --deep-space: #0a0a18;
+  --nebula-purple: #6c25e8;
+  --cosmic-blue: #0092ff;
+  --star-white: #ffffff;
+  --mars-red: #ff4e50;
+  --solar-yellow: #ffc700;
+  --earth-blue: #2e7fff;
+  
+  /* Z-index layers */
+  --z-base: 1;
+  --z-content: 10;
+  --z-controls: 20;
+  --z-overlays: 30;
+  --z-nav: 40;
+  --z-loading: 50;
+  --z-debug: 100;
+  
+  /* Transitions */
+  --transition-standard: all 0.3s ease;
+  --transition-slow: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-white);
+  line-height: 1.6;
+  overflow-x: hidden;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 4rem;
+}
+
+h2 {
+  font-size: 3rem;
+}
+
+p {
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+main {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+section {
+  min-height: 100vh;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  will-change: transform, opacity; /* Hardware acceleration */
+  z-index: var(--z-content);
+}
+
+/* GTA-style Section Transitions */
+.section-transition-enter {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.section-transition-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 1.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease-out;
+}
+
+.section-transition-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.section-transition-exit-active {
+  transform: translateY(-30%);
+  opacity: 0;
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease-in;
+}
+
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-darker);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-loading);
+  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+}
+
+.spinner {
+  width: 70px;
+  height: 70px;
+  border: 6px solid rgba(94, 23, 235, 0.3);
+  border-top-color: var(--accent-secondary);
+  border-radius: 50%;
+  animation: spinner 1.2s ease-in-out infinite;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0, 230, 255, 0.4);
+}
+
+.loading-text {
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  text-align: center;
+  max-width: 80%;
+  font-weight: 600;
+}
+
+/* Debug Panel - Enhanced */
+#debug-info {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 350px;
+  height: 200px;
+  background-color: rgba(5, 5, 16, 0.8);
+  border: 1px solid var(--accent-secondary);
+  border-radius: 5px;
+  color: var(--text-light);
+  font-family: monospace;
+  font-size: 12px;
+  padding: 10px;
+  overflow-y: auto;
+  z-index: var(--z-debug);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px rgba(0, 230, 255, 0.2);
+}
+
+.debug-item {
+  margin-bottom: 3px;
+  padding: 3px 5px;
+  border-radius: 3px;
+  transition: background-color 0.3s ease;
+}
+
+.debug-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.debug-time {
+  color: var(--accent-secondary);
+  margin-right: 5px;
+}
+
+.debug-msg {
+  color: var(--text-white);
+}
+
+.debug-error .debug-msg {
+  color: var(--mars-red);
+}
+
+.debug-warning .debug-msg {
+  color: var(--solar-yellow);
+}
+
+/* Canvas Container */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-base);
+  background: linear-gradient(to bottom, var(--bg-darker), var(--deep-space));
+  cursor: grab;
+}
+
+#canvas-container canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* Intro Section */
+.intro-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/images/openart-image_lC1XlWa1_1741449161168_raw.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  z-index: -1;
+  animation: pulse 15s ease-in-out infinite alternate;
+  filter: brightness(0.8) contrast(1.2) saturate(1.2);
+}
+
+.initial-logo {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-image: url('../assets/images/openart-image_4J3rsNPv_1741447658208_raw.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  box-shadow: 0 0 30px var(--accent-secondary);
+  margin-bottom: 50px;
+  transform: translateY(-150px);
+  opacity: 0.85;
+  animation: float 6s ease infinite;
+}
+
+.intro-text {
+  max-width: 800px;
+  padding: 0 2rem;
+  font-size: 4.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  background: rgba(5, 5, 16, 0.5);
+  backdrop-filter: blur(5px);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(92, 37, 232, 0.2);
+}
+
+.highlight {
+  color: var(--accent-secondary);
+  position: relative;
+  white-space: nowrap;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--highlight-color);
+}
+
+.highlight-block {
+  position: relative;
+  display: inline-block;
+  padding: 0 15px;
+  color: var(--bg-darker);
+  z-index: 1;
+}
+
+.highlight-block::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30%;
+  background: var(--accent-secondary);
+  z-index: -1;
+}
+
+/* Scroll Indicator - GTA-style */
+.scroll-indicator {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  padding: 20px;
+  background: rgba(10, 10, 24, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 30px;
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 25px rgba(92, 37, 232, 0.5), 
+              inset 0 0 15px rgba(0, 230, 255, 0.3);
+  z-index: var(--z-controls);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 15px rgba(92, 37, 232, 0.5), 
+                inset 0 0 10px rgba(0, 230, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(92, 37, 232, 0.7), 
+                inset 0 0 20px rgba(0, 230, 255, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(92, 37, 232, 0.5), 
+                inset 0 0 10px rgba(0, 230, 255, 0.2);
+  }
+}
+
+.scroll-indicator:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.scroll-indicator:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+.scroll-indicator span {
+  font-size: 1.2rem;
+  opacity: 1;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 0 10px var(--accent-secondary);
+}
+
+.scroll-arrow {
+  width: 25px;
+  height: 25px;
+  border-right: 3px solid var(--accent-secondary);
+  border-bottom: 3px solid var(--accent-secondary);
+  transform: rotate(45deg);
+  margin-bottom: 5px;
+  animation: float 1.5s ease infinite;
+  box-shadow: 2px 2px 5px rgba(0, 230, 255, 0.3);
+}
+
+/* Animation Section - GTA-style Section */
+.animation-section {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+}
+
+.logo-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay-fill {
+  fill: var(--overlay-fill);
+}
+
+.overlay-copy {
+  position: absolute;
+  bottom: 35%;
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+  transform: translateZ(40px);
+}
+
+.overlay-copy h2 {
+  font-size: 5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  padding: 0 1rem;
+  transform: skewY(-5deg);
+  text-shadow: 0 0 20px rgba(0, 230, 255, 0.5);
+}
+
+/* GTA 6-style section title */
+.section-title {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  font-size: 2.2rem;
+  color: var(--text-white);
+  transform: translateZ(20px);
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  padding-left: 15px;
+  border-left: 4px solid var(--accent-secondary);
+  text-shadow: 0 0 15px rgba(0, 230, 255, 0.7);
+  animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px rgba(0, 230, 255, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 25px rgba(0, 230, 255, 0.8), 0 0 40px rgba(92, 37, 232, 0.4);
+  }
+}
+
+/* Interactive Controls */
+.interactive-controls {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: var(--z-controls);
+}
+
+.control-btn {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 24, 0.7);
+  color: var(--text-white);
+  font-size: 28px;
+  transition: var(--transition-standard);
+  border: 2px solid var(--cosmic-blue);
+  box-shadow: 0 0 15px rgba(0, 230, 255, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+.control-btn span {
+  transform: translateY(-2px);
+}
+
+.control-btn:hover {
+  background: rgba(20, 20, 40, 0.9);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(0, 230, 255, 0.5);
+  border-color: var(--accent-secondary);
+}
+
+.control-btn:active, .control-btn.active-btn {
+  transform: scale(0.95);
+  background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 30px rgba(0, 230, 255, 0.7);
+}
+
+#reset-view {
+  background: rgba(10, 10, 24, 0.8);
+  border-color: var(--mars-red);
+}
+
+#reset-view:hover {
+  border-color: var(--accent-tertiary);
+  box-shadow: 0 0 20px rgba(255, 62, 107, 0.5);
+}
+
+#reset-view:active {
+  background: linear-gradient(45deg, var(--accent-tertiary), var(--accent-primary));
+}
+
+.vr-btn {
+  background: linear-gradient(to bottom right, var(--accent-primary), var(--accent-secondary));
+  font-weight: bold;
+  font-size: 20px !important;
+  letter-spacing: 1px;
+  border: none !important;
+}
+
+.vr-btn:hover {
+  background: linear-gradient(to bottom right, var(--nebula-purple), var(--cosmic-blue));
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(92, 37, 232, 0.7);
+}
+
+/* Navigation buttons - GTA 6-style */
+.section-nav {
+  position: fixed;
+  bottom: 50%;
+  right: 30px;
+  transform: translateY(50%);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: var(--z-nav);
+}
+
+.section-nav-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  transition: var(--transition-standard);
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.section-nav-btn.active {
+  background: var(--accent-secondary);
+  transform: scale(1.2);
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 15px var(--accent-secondary);
+}
+
+.section-nav-btn:hover {
+  background: var(--accent-primary);
+  transform: scale(1.2);
+  box-shadow: 0 0 15px var(--accent-primary);
+}
+
+/* Section Progress - GTA 6-style */
+.section-progress {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: var(--z-nav);
+}
+
+.progress-bar {
+  width: 60px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  width: 0%;
+  transition: width 0.8s cubic-bezier(.22, 1, .36, 1);
+  box-shadow: 0 0 10px var(--accent-secondary);
+}
+
+/* Content Section - GTA-style */
+.content-section {
+  background-color: transparent;
+  padding: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  text-align: center;
+  transform: translateZ(60px);
+  background: rgba(10, 10, 24, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  border: 1px solid rgba(92, 37, 232, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.content-section h2 {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+  color: var(--text-white);
+  text-shadow: 0 0 15px rgba(0, 230, 255, 0.5);
+}
+
+.content-section h2::after {
+  content: '';
+  position: absolute;
+  height: 5px;
+  width: 60%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  bottom: -10px;
+  left: 20%;
+  border-radius: 5px;
+  box-shadow: 0 0 10px var(--accent-secondary);
+}
+
+.content-section p {
+  font-size: 1.4rem;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  color: var(--text-light);
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 1rem;
+}
+
+.cta-button a {
+  display: inline-block;
+  padding: 15px 40px;
+  background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+  color: var(--text-white);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border-radius: 30px;
+  transition: var(--transition-standard);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 230, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-button a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: var(--transition-standard);
+}
+
+.cta-button a:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 230, 255, 0.5);
+}
+
+.cta-button a:hover::before {
+  left: 100%;
+  transition: 0.7s;
+}
+
+.cta-button a:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Touch Hint */
+.touch-hint {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  background: rgba(10, 10, 24, 0.8);
+  border-radius: 15px;
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: var(--z-overlays);
+  box-shadow: 0 0 20px rgba(0, 230, 255, 0.3);
+  border: 1px solid var(--accent-primary);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+}
+
+.touch-hint.show {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+.touch-hint-icon {
+  font-size: 28px;
+  animation: touchMove 1.5s ease infinite;
+}
+
+.touch-hint span {
+  font-size: 1rem;
+  color: var(--text-white);
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes touchMove {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(8px, -8px);
+  }
+}
+
+/* Media Queries */
+@media (max-width: 900px) {
+  h1 {
+    font-size: 3.2rem;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+  }
+  
+  .intro-text {
+    font-size: 3rem;
+  }
+  
+  .overlay-copy h2 {
+    font-size: 3.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.6rem;
+  }
+  
+  .content-section p {
+    font-size: 1.2rem;
+  }
+  
+  .control-btn {
+    width: 55px;
+    height: 55px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  .intro-text {
+    font-size: 2.2rem;
+    padding: 15px;
+  }
+  
+  .overlay-copy h2 {
+    font-size: 2.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.4rem;
+    top: 5%;
+  }
+  
+  .content-section p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .control-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+  
+  .container {
+    padding: 3rem 1.5rem;
+  }
+  
+  #debug-info {
+    width: 250px;
+    height: 150px;
+    font-size: 10px;
+  }
+  
+  .cta-button a {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+  
+  .scroll-indicator {
+    bottom: 30px;
+    padding: 15px;
+  }
+  
+  .scroll-indicator span {
+    font-size: 1rem;
+  }
+  
+  .scroll-arrow {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .progress-bar {
+    width: 40px;
+  }
+  
+  .interactive-controls {
+    right: 20px;
+    bottom: 20px;
+    gap: 15px;
+  }
+}
+
+/* GTA 6-style section transition effects */
+.section {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    /* Improved 3D perspective for GTA effect */
+    perspective: 2000px;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    opacity: 0; /* Start hidden */
+    transform: translateY(20px) scale(0.97);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* GTA 6-style content reveal animations */
+.section .content {
+    position: relative;
+    padding: 60px;
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+    transition-delay: 0.2s;
+}
+
+.section.active .content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* GTA 6-style heading effects */
+.section h1, .section h2 {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.section h1::after, .section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, #0066ff, #00ffcc);
+    transform: translateX(-101%);
+    transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.section.active h1::after, .section.active h2::after {
+    transform: translateX(0);
+}
+
+/* GTA 6-style service cards */
+.service-card {
+    background: rgba(10, 15, 30, 0.7);
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(40px);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), 
+                opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+                box-shadow 0.3s ease;
+}
+
+.section.active .service-card {
+    transform: translateY(0);
+    opacity: 1;
+    transition-delay: calc(0.1s * var(--card-index, 0));
+}
+
+.service-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 102, 255, 0.3);
+    transform: translateY(-5px);
+}
+
+/* GTA 6-style gradient text effect */
+.gradient-text {
+    background: linear-gradient(90deg, #0066ff, #00ffcc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    padding-right: 5px; /* Small padding to prevent cutoff */
+    font-weight: bold;
+}
+
+/* GTA 6-style progress indicators */
+.progress-indicator {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.progress-item {
+    width: 5px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.progress-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0%;
+    background: linear-gradient(to top, #0066ff, #00ffcc);
+    border-radius: 10px;
+    transition: height 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.progress-item.active .progress-fill {
+    height: 100%;
+}
+
+/* GTA 6-style scroll indicator */
+.scroll-indicator {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-indicator:hover {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.1);
+}
+
+.scroll-indicator-text {
+    text-transform: uppercase;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(0, 102, 255, 0.7);
+}
+
+.scroll-arrow {
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    border-radius: 50%;
+    position: relative;
+    animation: bounce 2s infinite;
+}
+
+.scroll-arrow:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    margin-top: -2px;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+} 

@@ -1,0 +1,7 @@
+<!-- This is a placeholder for a GLB file -->
+<!-- In reality, GLB files are binary and cannot be edited as text -->
+<!-- This file serves as a placeholder for our 3D showcase demo -->
+
+This is a placeholder for the hubble file.
+Since GLB files are binary 3D model files, a real GLB file can't be created with text.
+The application will fall back to creating a simple 3D model programmatically when it can't load this file.

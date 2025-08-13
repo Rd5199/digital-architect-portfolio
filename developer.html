@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Architect | Web & App Developer</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/developer.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Typed.js for typing effect -->
+    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    
+    <!-- Three.js dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.27/dist/lenis.min.js"></script>
+    
+    <!-- Three.js add-ons -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/DRACOLoader.js"></script>
+    
+    <!-- Fallback for direct module import -->
+    <script>
+        window.GLTFLoader = window.GLTFLoader || (THREE && THREE.GLTFLoader);
+        window.OrbitControls = window.OrbitControls || (THREE && THREE.OrbitControls);
+        window.DRACOLoader = window.DRACOLoader || (THREE && THREE.DRACOLoader);
+    </script>
+</head>
+<body class="developer-theme">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-logo">
+            <h1 class="dev-logo">Digital<span>Architect</span></h1>
+        </div>
+        <div class="loading-text">
+            <h2>Building Your Digital Experience</h2>
+            <p>Crafting code that brings ideas to life...</p>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="dev-header">
+        <div class="dev-container">
+            <nav class="dev-nav">
+                <div class="dev-logo">Digital<span>Architect</span></div>
+                <div class="dev-nav-links">
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#process">Process</a>
+                    <a href="#portfolio">Portfolio</a>
+                    <a href="#testimonials">Testimonials</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#contact" class="dev-btn dev-btn-primary">Get a Quote</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section with 3D Model -->
+    <section id="home" class="dev-hero">
+        <div class="dev-container">
+            <div class="dev-hero-content">
+                <h1 class="dev-hero-title">Crafting Digital Experiences <span>That Inspire & Convert</span></h1>
+                <p class="dev-hero-subtitle">Expert Web & Mobile App Developer, transforming visionary ideas into seamless, high-performance digital realities.</p>
+                <div class="dev-hero-cta">
+                    <a href="#portfolio" class="dev-btn dev-btn-primary">View My Work</a>
+                    <a href="#contact" class="dev-btn dev-btn-outline">Let's Discuss Your Project</a>
+                </div>
+            </div>
+            
+            <!-- 3D Creation Core -->
+            <div class="dev-creation-core">
+                <div class="creation-core-container" id="model-container"></div>
+                <!-- Orbiting motes will be added via JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Canvas container for 3D background -->
+        <div id="canvas-container" class="dev-canvas-container"></div>
+    </section>
+    
+    <!-- About/Intro Section -->
+    <section id="about" class="dev-section dev-section-alt">
+        <div class="dev-container">
+            <h2 class="dev-section-title">The Architect Behind the Code</h2>
+            <p class="dev-section-subtitle">I build digital experiences that merge creativity with technical excellence, focusing on performance, usability, and scalability.</p>
+            
+            <div class="dev-about-grid">
+                <div class="dev-about-content">
+                    <p>Hi, I'm a passionate and results-driven developer specializing in custom web applications and intuitive mobile experiences. My approach combines meticulous planning with creative problem-solving to build solutions that not only function flawlessly but also captivate users.</p>
+                    <p>I believe great software is born from a deep understanding of user needs and business goals. Each line of code, each design choice, is a step towards crafting a digital product that delivers tangible value and lasting impact.</p>
+                    <div class="dev-about-cta">
+                        <a href="#contact" class="dev-btn dev-btn-outline">Start Your Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Services Section -->
+    <section id="services" class="dev-section">
+        <div class="dev-container">
+            <h2 class="dev-section-title">Building Your Vision, Pixel by Pixel</h2>
+            <p class="dev-section-subtitle">Comprehensive development services tailored to meet your specific business requirements.</p>
+            
+            <div class="dev-services-grid">
+                <div class="dev-service-card">
+                    <div class="dev-service-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Custom Web Development</h3>
+                    <p>Building responsive, high-performance websites and web applications tailored to your specific business needs, from e-commerce to complex SaaS platforms.</p>
+                </div>
+                
+                <div class="dev-service-card">
+                    <div class="dev-service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile App Development</h3>
+                    <p>Crafting intuitive and engaging native or cross-platform mobile apps for iOS and Android that delight users and drive growth.</p>
+                </div>
+                
+                <div class="dev-service-card">
+                    <div class="dev-service-icon">
+                        <i class="fas fa-drafting-compass"></i>
+                    </div>
+                    <h3>UI/UX Design & Strategy</h3>
+                    <p>Designing user-centric interfaces that are not only visually stunning but also enhance usability and achieve your strategic objectives.</p>
+                </div>
+                
+                <div class="dev-service-card">
+                    <div class="dev-service-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>API Development & Integration</h3>
+                    <p>Developing robust APIs and seamlessly integrating third-party services to extend functionality and streamline operations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Process Section -->
+    <section id="process" class="dev-section dev-section-alt">
+        <div class="dev-container">
+            <h2 class="dev-section-title">From Concept to Creation: A Transparent Journey</h2>
+            <p class="dev-section-subtitle">My comprehensive development process ensures quality results and a smooth experience from start to finish.</p>
+            
+            <div class="dev-process-steps">
+                <div class="dev-process-step">
+                    <div class="dev-step-number">1</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h3>Discovery & Strategy</h3>
+                    <p>Understanding your vision, goals, and target audience to define a clear project roadmap.</p>
+                </div>
+                
+                <div class="dev-process-step">
+                    <div class="dev-step-number">2</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3>Design & Prototyping</h3>
+                    <p>Crafting intuitive user experiences and visually appealing interfaces, iterated through feedback.</p>
+                </div>
+                
+                <div class="dev-process-step">
+                    <div class="dev-step-number">3</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Development & Coding</h3>
+                    <p>Writing clean, efficient, and scalable code using modern technologies and best practices.</p>
+                </div>
+                
+                <div class="dev-process-step">
+                    <div class="dev-step-number">4</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <h3>Testing & QA</h3>
+                    <p>Rigorous testing across devices and scenarios to ensure a flawless, bug-free product.</p>
+                </div>
+                
+                <div class="dev-process-step">
+                    <div class="dev-step-number">5</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Deployment & Launch</h3>
+                    <p>Seamless deployment to your chosen environment and support through the launch process.</p>
+                </div>
+                
+                <div class="dev-process-step">
+                    <div class="dev-step-number">6</div>
+                    <div class="dev-step-icon">
+                        <i class="fas fa-life-ring"></i>
+                    </div>
+                    <h3>Ongoing Support</h3>
+                    <p>Providing continued maintenance, updates, and future enhancements as your needs grow.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="dev-section">
+        <div class="dev-container">
+            <h2 class="dev-section-title">Bringing Ideas to Life</h2>
+            <p class="dev-section-subtitle">Explore my recent projects and see how I've helped clients achieve their digital goals.</p>
+            
+            <div class="dev-portfolio-grid">
+                <div class="dev-portfolio-item">
+                    <div class="dev-portfolio-image">
+                        <img src="assets/images/openart-image_lC1XlWa1_1741449161168_raw.jpg" alt="E-commerce Platform X">
+                    </div>
+                    <div class="dev-portfolio-content">
+                        <h3>E-commerce Platform X</h3>
+                        <span class="dev-portfolio-type">Web Application</span>
+                        <div class="dev-portfolio-tags">
+                            <span class="dev-tag">Vue.js</span>
+                            <span class="dev-tag">Node.js</span>
+                            <span class="dev-tag">Stripe</span>
+                        </div>
+                        <a href="#" class="dev-btn dev-btn-outline">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="dev-portfolio-item">
+                    <div class="dev-portfolio-image">
+                        <img src="assets/images/openart-image_4J3rsNPv_1741447658208_raw.jpg" alt="Wellness Mobile App Y">
+                    </div>
+                    <div class="dev-portfolio-content">
+                        <h3>Wellness Mobile App</h3>
+                        <span class="dev-portfolio-type">Mobile App (iOS & Android)</span>
+                        <div class="dev-portfolio-tags">
+                            <span class="dev-tag">React Native</span>
+                            <span class="dev-tag">Firebase</span>
+                            <span class="dev-tag">API Integration</span>
+                        </div>
+                        <a href="#" class="dev-btn dev-btn-outline">View Project</a>
+                    </div>
+                </div>
+                
+                <div class="dev-portfolio-item">
+                    <div class="dev-portfolio-image">
+                        <img src="assets/images/space-bg.svg" alt="SaaS Dashboard Z">
+                    </div>
+                    <div class="dev-portfolio-content">
+                        <h3>SaaS Dashboard</h3>
+                        <span class="dev-portfolio-type">Web Application</span>
+                        <div class="dev-portfolio-tags">
+                            <span class="dev-tag">Angular</span>
+                            <span class="dev-tag">Python/Django</span>
+                            <span class="dev-tag">AWS</span>
+                        </div>
+                        <a href="#" class="dev-btn dev-btn-outline">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Tech Stack Section -->
+    <section id="tech" class="dev-section dev-section-alt">
+        <div class="dev-container">
+            <h2 class="dev-section-title">Technologies I Master & Love</h2>
+            <p class="dev-section-subtitle">I stay current with the latest technologies to deliver modern, efficient solutions.</p>
+            
+            <div class="dev-tech-grid">
+                <div class="dev-tech-category">
+                    <h3>Frontend</h3>
+                    <div class="dev-tech-icons">
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-vue-js dev-tech-icon-img" style="color: #42b883; font-size: 40px;"></i>
+                            <span>Vue.js</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-react dev-tech-icon-img" style="color: #61dafb; font-size: 40px;"></i>
+                            <span>React</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-angular dev-tech-icon-img" style="color: #dd0031; font-size: 40px;"></i>
+                            <span>Angular</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-html5 dev-tech-icon-img" style="color: #e34f26; font-size: 40px;"></i>
+                            <span>HTML5</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-css3-alt dev-tech-icon-img" style="color: #264de4; font-size: 40px;"></i>
+                            <span>CSS3</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-js-square dev-tech-icon-img" style="color: #f7df1e; font-size: 40px;"></i>
+                            <span>JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dev-tech-category">
+                    <h3>Backend</h3>
+                    <div class="dev-tech-icons">
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-node-js dev-tech-icon-img" style="color: #68a063; font-size: 40px;"></i>
+                            <span>Node.js</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-python dev-tech-icon-img" style="color: #3776ab; font-size: 40px;"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-php dev-tech-icon-img" style="color: #777bb4; font-size: 40px;"></i>
+                            <span>PHP</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fas fa-cogs dev-tech-icon-img" style="color: #ce3a55; font-size: 40px;"></i>
+                            <span>Express.js</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dev-tech-category">
+                    <h3>Mobile</h3>
+                    <div class="dev-tech-icons">
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-react dev-tech-icon-img" style="color: #61dafb; font-size: 40px;"></i>
+                            <span>React Native</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-swift dev-tech-icon-img" style="color: #f05138; font-size: 40px;"></i>
+                            <span>Swift</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-android dev-tech-icon-img" style="color: #3ddc84; font-size: 40px;"></i>
+                            <span>Kotlin</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fas fa-mobile-alt dev-tech-icon-img" style="color: #0175c2; font-size: 40px;"></i>
+                            <span>Flutter</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dev-tech-category">
+                    <h3>Databases & Cloud</h3>
+                    <div class="dev-tech-icons">
+                        <div class="dev-tech-icon">
+                            <i class="fas fa-database dev-tech-icon-img" style="color: #336791; font-size: 40px;"></i>
+                            <span>PostgreSQL</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fas fa-database dev-tech-icon-img" style="color: #4db33d; font-size: 40px;"></i>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fas fa-fire dev-tech-icon-img" style="color: #ffca28; font-size: 40px;"></i>
+                            <span>Firebase</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-aws dev-tech-icon-img" style="color: #ff9900; font-size: 40px;"></i>
+                            <span>AWS</span>
+                        </div>
+                        <div class="dev-tech-icon">
+                            <i class="fab fa-docker dev-tech-icon-img" style="color: #0db7ed; font-size: 40px;"></i>
+                            <span>Docker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="dev-section dev-testimonials">
+        <div class="dev-container">
+            <h2 class="dev-section-title">What Clients Say</h2>
+            <p class="dev-section-subtitle">Hear from businesses and individuals who have trusted me with their projects.</p>
+            
+            <div class="dev-testimonials-grid">
+                <div class="dev-testimonial-card">
+                    <div class="dev-testimonial-quote">
+                        Working with DigitalArchitect was a game-changer for our business. They transformed our outdated website into a modern, high-converting platform that our customers love. Their technical expertise and attention to detail exceeded our expectations.
+                    </div>
+                    <div class="dev-testimonial-author">
+                        <div class="dev-testimonial-author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>CEO, InnovateTech Solutions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dev-testimonial-card">
+                    <div class="dev-testimonial-quote">
+                        The mobile app developed by DigitalArchitect has significantly improved our customer engagement. Their iterative approach ensured we got exactly what we needed, and their post-launch support has been exceptional.
+                    </div>
+                    <div class="dev-testimonial-author">
+                        <div class="dev-testimonial-author-info">
+                            <h4>Michael Chen</h4>
+                            <p>Founder, HealthWave</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dev-testimonial-card">
+                    <div class="dev-testimonial-quote">
+                        We approached DigitalArchitect with a complex e-commerce integration project. They not only delivered on time but also optimized our system in ways we hadn't even considered. Truly excellent work.
+                    </div>
+                    <div class="dev-testimonial-author">
+                        <div class="dev-testimonial-author-info">
+                            <h4>Emma Rodriguez</h4>
+                            <p>CTO, ShopifyPlus Partner</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="dev-section dev-contact">
+        <div class="dev-container">
+            <h2 class="dev-section-title">Ready to Launch Your Next Project?</h2>
+            <p class="dev-section-subtitle">Let's collaborate to build something truly exceptional. Reach out to discuss your ideas.</p>
+            
+            <div class="dev-contact-form">
+                <form id="contact-form">
+                    <div class="dev-form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="dev-form-control" required>
+                    </div>
+                    
+                    <div class="dev-form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="dev-form-control" required>
+                    </div>
+                    
+                    <div class="dev-form-group">
+                        <label for="project-type">Project Type</label>
+                        <select id="project-type" class="dev-form-control">
+                            <option value="">Select Project Type</option>
+                            <option value="website">Website</option>
+                            <option value="web-app">Web Application</option>
+                            <option value="mobile-app">Mobile App</option>
+                            <option value="e-commerce">E-commerce</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="dev-form-group">
+                        <label for="message">Project Details</label>
+                        <textarea id="message" class="dev-form-control" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="dev-btn dev-btn-primary" style="width: 100%;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="dev-footer">
+        <div class="dev-container">
+            <div class="dev-footer-content">
+                <div class="dev-footer-logo">Digital<span>Architect</span></div>
+                
+                <div class="dev-social-links">
+                    <a href="#" class="dev-social-link">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="dev-social-link">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="#" class="dev-social-link">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="dev-social-link">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+                </div>
+                
+                <div class="dev-footer-nav">
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#process">Process</a>
+                    <a href="#portfolio">Portfolio</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                
+                <div class="dev-copyright">
+                    &copy; <span id="year"></span> DigitalArchitect. All Rights Reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="js/loader.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/gltf-helper.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/developer.js"></script>
+</body>
+</html> 

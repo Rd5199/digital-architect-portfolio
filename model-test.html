@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Test - Low Complexity</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #05051a;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            background: rgba(94, 23, 235, 0.7);
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 100;
+        }
+        
+        .stats {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas"></div>
+    <div class="loading">Loading: <span id="loading-status">0%</span></div>
+    <div class="stats">
+        FPS: <span id="fps">0</span><br>
+        Draw calls: <span id="draw-calls">0</span><br>
+        Triangles: <span id="triangles">0</span>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" id="reduce-quality">Reduce Quality</button>
+        <button class="btn" id="toggle-rotation">Stop Rotation</button>
+        <button class="btn" id="wireframe">Wireframe</button>
+        <a href="index.html" class="btn">Back to Main</a>
+    </div>
+    
+    <!-- Load Three.js from a reliable CDN with fallbacks -->
+    <script>
+        // Helper to dynamically load scripts with fallbacks
+        function loadScript(urls, callback, errorCallback) {
+            let loaded = false;
+            
+            function attemptLoad(index) {
+                if (index >= urls.length) {
+                    if (errorCallback && !loaded) errorCallback();
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = urls[index];
+                script.onload = function() {
+                    loaded = true;
+                    if (callback) callback();
+                };
+                script.onerror = function() {
+                    console.warn(`Failed to load ${urls[index]}, trying next fallback...`);
+                    attemptLoad(index + 1);
+                };
+                document.head.appendChild(script);
+            }
+            
+            attemptLoad(0);
+        }
+        
+        // First load Three.js core with fallbacks
+        loadScript([
+            'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js',
+            'https://unpkg.com/three@0.149.0/build/three.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/three.js/149/three.min.js'
+        ], function() {
+            // Once Three.js is loaded, load extensions
+            Promise.all([
+                new Promise(resolve => {
+                    loadScript([
+                        'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js',
+                        'https://unpkg.com/three@0.149.0/examples/js/controls/OrbitControls.js'
+                    ], resolve);
+                }),
+                new Promise(resolve => {
+                    loadScript([
+                        'https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js',
+                        'https://unpkg.com/three@0.149.0/examples/js/loaders/GLTFLoader.js'
+                    ], resolve);
+                })
+            ]).then(initScene);
+        }, function() {
+            alert('Failed to load Three.js. Please check your internet connection and try again.');
+        });
+        
+        // Optimized scene initialization
+        function initScene() {
+            // Performance settings
+            const pixelRatio = Math.min(1.2, window.devicePixelRatio || 1);
+            const maxFrameRate = 60;
+            let lastFrameTime = 0;
+            let isRotating = true;
+            let useWireframe = false;
+            
+            // Setup renderer with optimized settings
+            const renderer = new THREE.WebGLRenderer({ 
+                antialias: false,
+                powerPreference: 'high-performance',
+                alpha: false
+            });
+            renderer.setPixelRatio(pixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x05051a);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            
+            // Enable frustum culling
+            renderer.sortObjects = true;
+            
+            // Limit texture size for better performance
+            renderer.maxTextureSize = 1024;
+            
+            document.getElementById('canvas').appendChild(renderer.domElement);
+            
+            // Simple scene setup
+            const scene = new THREE.Scene();
+            
+            // Use optimized camera settings
+            const camera = new THREE.PerspectiveCamera(
+                60, 
+                window.innerWidth / window.innerHeight, 
+                0.1, 
+                100
+            );
+            camera.position.set(0, 2, 5);
+            
+            // Simple lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(5, 5, 5);
+            scene.add(directionalLight);
+            
+            // Simple controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxDistance = 50;
+            
+            // Performance monitoring
+            const stats = {
+                fps: document.getElementById('fps'),
+                drawCalls: document.getElementById('draw-calls'),
+                triangles: document.getElementById('triangles')
+            };
+            
+            // Track frame times for FPS calculation
+            let frameCount = 0;
+            let lastFpsUpdate = 0;
+            
+            // Model container to reference loaded model
+            let modelGroup = new THREE.Group();
+            scene.add(modelGroup);
+            
+            // Load model with progress tracking
+            const loadingStatus = document.getElementById('loading-status');
+            const loader = new THREE.GLTFLoader();
+            
+            loader.load(
+                './assets/models/space_satellite.glb',
+                function(gltf) {
+                    // Clear existing model
+                    while(modelGroup.children.length > 0) {
+                        modelGroup.remove(modelGroup.children[0]);
+                    }
+                    
+                    // Add new model and optimize it
+                    const model = gltf.scene;
+                    
+                    // Optimize materials for better performance
+                    model.traverse(function(child) {
+                        if (child.isMesh) {
+                            // Use basic materials for better performance
+                            const simpleMaterial = new THREE.MeshBasicMaterial({
+                                color: child.material.color || 0xffffff,
+                                wireframe: useWireframe
+                            });
+                            child.material = simpleMaterial;
+                            
+                            // Disable shadows
+                            child.castShadow = false;
+                            child.receiveShadow = false;
+                            
+                            // Optimize geometry
+                            if (child.geometry) {
+                                child.geometry.computeBoundingSphere();
+                                child.frustumCulled = true;
+                            }
+                        }
+                    });
+                    
+                    // Scale and position model
+                    model.scale.set(1, 1, 1);
+                    model.position.set(0, 0, 0);
+                    
+                    // Add to scene
+                    modelGroup.add(model);
+                    loadingStatus.textContent = '100% - Done!';
+                    
+                    setTimeout(() => {
+                        document.querySelector('.loading').style.opacity = '0.5';
+                    }, 2000);
+                },
+                function(progress) {
+                    if (progress.lengthComputable) {
+                        const percent = Math.round((progress.loaded / progress.total) * 100);
+                        loadingStatus.textContent = `${percent}%`;
+                    }
+                },
+                function(error) {
+                    console.error('Error loading model:', error);
+                    loadingStatus.textContent = 'Error loading model';
+                }
+            );
+            
+            // Update performance stats
+            function updateStats() {
+                // Update FPS counter every second
+                frameCount++;
+                const now = performance.now();
+                
+                if (now - lastFpsUpdate >= 1000) {
+                    stats.fps.textContent = Math.round(frameCount * 1000 / (now - lastFpsUpdate));
+                    frameCount = 0;
+                    lastFpsUpdate = now;
+                    
+                    // Get renderer stats
+                    const rendererInfo = renderer.info;
+                    stats.drawCalls.textContent = rendererInfo.render.calls;
+                    stats.triangles.textContent = rendererInfo.render.triangles;
+                }
+            }
+            
+            // Animation loop
+            function animate(time) {
+                requestAnimationFrame(animate);
+                
+                // Throttle rendering to target frame rate
+                if (maxFrameRate < 60) {
+                    const elapsed = time - lastFrameTime;
+                    if (elapsed < 1000 / maxFrameRate) return;
+                    lastFrameTime = time - (elapsed % (1000 / maxFrameRate));
+                }
+                
+                // Update controls
+                controls.update();
+                
+                // Rotate model if enabled
+                if (isRotating && modelGroup) {
+                    modelGroup.rotation.y += 0.005;
+                }
+                
+                // Render scene
+                renderer.render(scene, camera);
+                
+                // Update stats
+                updateStats();
+            }
+            
+            // Start animation loop
+            animate(0);
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // Button event handlers
+            document.getElementById('reduce-quality').addEventListener('click', function() {
+                renderer.setPixelRatio(renderer.getPixelRatio() * 0.8);
+                this.textContent = `Quality: ${Math.round(renderer.getPixelRatio() * 100)}%`;
+            });
+            
+            document.getElementById('toggle-rotation').addEventListener('click', function() {
+                isRotating = !isRotating;
+                this.textContent = isRotating ? 'Stop Rotation' : 'Start Rotation';
+            });
+            
+            document.getElementById('wireframe').addEventListener('click', function() {
+                useWireframe = !useWireframe;
+                this.textContent = useWireframe ? 'Solid' : 'Wireframe';
+                
+                modelGroup.traverse(function(child) {
+                    if (child.isMesh && child.material) {
+                        child.material.wireframe = useWireframe;
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html> 
