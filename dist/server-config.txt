@@ -1,0 +1,79 @@
+SERVER CONFIGURATION FOR MIME TYPE FIX
+=====================================
+
+If you're still getting "video/mp2t" MIME type errors, your hosting provider needs to configure the server.
+
+COPY AND SEND THIS TO YOUR HOSTING PROVIDER:
+
+"Please configure the server to serve JavaScript files with the correct MIME type. I'm getting 'video/mp2t' MIME type errors for .js files, which prevents my Vue.js application from loading.
+
+Required MIME type mappings:
+- .js files → application/javascript
+- .mjs files → application/javascript  
+- .ts files → application/javascript
+- .jsx files → application/javascript
+- .tsx files → application/javascript
+- .css files → text/css
+- .svg files → image/svg+xml
+
+Please also ensure that:
+1. .htaccess files are enabled and processed
+2. mod_headers and mod_mime modules are enabled
+3. No conflicting MIME type mappings exist for .js files
+
+This is a critical issue preventing my website from functioning."
+
+ALTERNATIVE: APACHE CONFIGURATION
+=================================
+
+If you have access to Apache configuration, add this to your virtual host or .htaccess:
+
+<Directory "/var/www/html">
+    # Remove any conflicting MIME types
+    RemoveType .js
+    RemoveType .mjs
+    RemoveType .ts
+    
+    # Set correct MIME types
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType application/javascript .ts
+    AddType text/css .css
+    AddType image/svg+xml .svg
+</Directory>
+
+ALTERNATIVE: NGINX CONFIGURATION
+================================
+
+If using Nginx, add this to your server block:
+
+location ~* \.(js|mjs|ts|jsx|tsx)$ {
+    add_header Content-Type "application/javascript" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    try_files $uri =404;
+}
+
+location ~* \.css$ {
+    add_header Content-Type "text/css" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    try_files $uri =404;
+}
+
+ALTERNATIVE: PHP SOLUTION
+=========================
+
+If nothing else works, rename your .htaccess to .htaccess.bak and use the PHP solution:
+
+1. Upload force-mime.php to your server root
+2. Configure your server to route all .js requests through this PHP file
+3. The PHP file will force the correct MIME types
+
+CONTACT YOUR HOSTING PROVIDER
+=============================
+
+The "video/mp2t" MIME type error indicates a server-level configuration issue that requires hosting provider intervention. The .htaccess file should fix it, but if it doesn't, your hosting provider needs to:
+
+1. Check for conflicting MIME type mappings
+2. Ensure .htaccess processing is enabled
+3. Verify mod_headers and mod_mime modules are active
+4. Remove any server-level MIME type overrides for .js files 
