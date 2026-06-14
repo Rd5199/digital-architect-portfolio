@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
+    "vercel-build": "npm run build:landing && npm run build",
     "preview": "vite preview",
     "build-only": "vite build",
     "build:landing": "cd lemon-bureau-build && npm run build && node -e \"require('fs').cpSync('dist','../public/business-landing',{recursive:true,force:true})\"",
