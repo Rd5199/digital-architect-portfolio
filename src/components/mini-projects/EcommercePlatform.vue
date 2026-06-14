@@ -8,14 +8,14 @@
             <span class="control yellow"></span>
             <span class="control green"></span>
           </div>
-          <div class="toolbar-title">E-commerce Platform Demo</div>
+          <div class="toolbar-title">E-Commerce Demo</div>
           <div class="toolbar-spacer"></div>
         </div>
         <div class="desktop-content">
           <div class="ecommerce-platform">
             <div class="back-navigation">
               <router-link :to="`/project/1`" class="back-link">
-                <i class="fas fa-arrow-left"></i> Back to E-commerce Project
+                <i class="fas fa-arrow-left"></i> Back to E-Commerce Project
               </router-link>
             </div>
             
@@ -1052,7 +1052,7 @@ export default defineComponent({
 .ecommerce-platform {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 30px 20px 20px;
+  padding: 40px 32px 32px;
   font-family: 'DM Sans', sans-serif;
   color: var(--text-color);
   height: 100%;
@@ -1060,8 +1060,8 @@ export default defineComponent({
 }
 
 .back-navigation {
-  margin-bottom: 30px;
-  padding-top: 10px;
+  margin-bottom: 40px;
+  padding-top: 20px;
 }
 
 .back-link {
@@ -1085,16 +1085,17 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
-  padding: 15px 20px;
+  margin-bottom: 50px;
+  padding: 20px 28px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
+  transition: all 0.3s ease-in-out;
 }
 
 .user-mode-toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 .user-mode-toggle span {
@@ -1120,15 +1121,16 @@ export default defineComponent({
 
 .platform-info {
   display: flex;
-  gap: 15px;
+  gap: 20px;
 }
 
 .info-badge {
-  padding: 8px 12px;
+  padding: 10px 16px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 5px;
   font-size: 0.9rem;
   font-weight: 500;
+  transition: all 0.3s ease-in-out;
 }
 
 /* Admin Dashboard */
@@ -1148,15 +1150,15 @@ export default defineComponent({
 .dashboard-metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
+  gap: 24px;
+  margin-bottom: 50px;
 }
 
 .metric-card {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  padding: 25px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 32px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .metric-card:hover {
@@ -1193,13 +1195,14 @@ export default defineComponent({
 .admin-sections {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 50px;
 }
 
 .inventory-management, .recent-orders {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 10px;
-  padding: 25px;
+  padding: 32px;
+  transition: all 0.3s ease-in-out;
 }
 
 .inventory-management h3, .recent-orders h3 {
@@ -1210,17 +1213,18 @@ export default defineComponent({
 
 .inventory-alerts {
   display: flex;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 20px;
+  margin-bottom: 24px;
 }
 
 .alert {
-  padding: 10px 15px;
+  padding: 12px 20px;
   border-radius: 5px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-size: 0.9rem;
+  transition: all 0.3s ease-in-out;
 }
 
 .alert.low-stock {
@@ -1240,7 +1244,7 @@ export default defineComponent({
 
 .inventory-table th, .orders-table th,
 .inventory-table td, .orders-table td {
-  padding: 12px 15px;
+  padding: 16px 20px;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -1561,8 +1565,8 @@ export default defineComponent({
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
-  margin-bottom: 40px;
+  gap: 28px;
+  margin-bottom: 50px;
 }
 
 .product-card {
@@ -1570,7 +1574,7 @@ export default defineComponent({
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   cursor: pointer;
   display: flex;
   flex-direction: column;

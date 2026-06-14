@@ -73,7 +73,7 @@
     <div class="mini-project-description">
       <h2>About This Component</h2>
       <p>
-        The Meditation Timer is a core feature of the Wellness Mobile App, designed to guide users through 
+        The Meditation Timer is a core feature of the wellness app, designed to guide users through 
         meditation sessions of varying lengths with ambient sounds and visual feedback.
       </p>
       <p>

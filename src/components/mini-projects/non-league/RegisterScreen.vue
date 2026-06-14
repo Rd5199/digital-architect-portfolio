@@ -18,7 +18,7 @@
     
     <div class="content">
       <div class="form-intro">
-        <p>Join the Non-League Network community to connect with other players, coaches, and fans.</p>
+        <p>Join the community to connect with other players, coaches, and fans.</p>
       </div>
       
       <form class="registration-form" @submit.prevent>

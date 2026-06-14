@@ -1,0 +1,100 @@
+# AGGRESSIVE MIME TYPE OVERRIDE - FORCE ALL SERVER SETTINGS
+RewriteEngine On
+
+# Disable ALL existing MIME type mappings
+<IfModule mod_mime.c>
+    RemoveType .js
+    RemoveType .mjs
+    RemoveType .ts
+    RemoveType .jsx
+    RemoveType .tsx
+    RemoveType .css
+    RemoveType .scss
+    RemoveType .sass
+    RemoveType .svg
+    RemoveType .woff
+    RemoveType .woff2
+    RemoveType .ttf
+    RemoveType .eot
+    RemoveType .png
+    RemoveType .jpg
+    RemoveType .jpeg
+    RemoveType .gif
+    RemoveType .webp
+    RemoveType .ico
+</IfModule>
+
+# Force correct MIME types with maximum priority
+<FilesMatch "\.(js|mjs|ts|jsx|tsx)$">
+    ForceType application/javascript
+    Header set Content-Type "application/javascript"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=31536000"
+    Header always set Content-Type "application/javascript"
+</FilesMatch>
+
+<FilesMatch "\.(css|scss|sass)$">
+    ForceType text/css
+    Header set Content-Type "text/css"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=31536000"
+    Header always set Content-Type "text/css"
+</FilesMatch>
+
+<FilesMatch "\.svg$">
+    ForceType image/svg+xml
+    Header set Content-Type "image/svg+xml"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=31536000"
+    Header always set Content-Type "image/svg+xml"
+</FilesMatch>
+
+<FilesMatch "\.(woff|woff2|ttf|eot)$">
+    ForceType application/font-woff
+    Header set Content-Type "application/font-woff"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=31536000"
+    Header always set Content-Type "application/font-woff"
+</FilesMatch>
+
+<FilesMatch "\.(png|jpg|jpeg|gif|webp|ico)$">
+    ForceType image/png
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cache-Control "public, max-age=31536000"
+</FilesMatch>
+
+# Handle static assets first (CSS, JS, images, etc.)
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+# Handle directory requests
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# For all other requests, serve index.html (SPA routing)
+RewriteRule ^ index.html [L]
+
+# Security headers to prevent MIME sniffing
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Override any server-level MIME type configurations
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType application/javascript .ts
+    AddType application/javascript .jsx
+    AddType application/javascript .tsx
+    AddType text/css .css
+    AddType text/css .scss
+    AddType text/css .sass
+    AddType image/svg+xml .svg
+    AddType application/font-woff .woff
+    AddType application/font-woff .woff2
+    AddType application/font-woff .ttf
+    AddType application/font-woff .eot
+</IfModule> 

@@ -1248,7 +1248,7 @@ export default defineComponent({
 .wellness-suite {
   max-width: 100%;
   height: 100%;
-  padding: 15px 15px 80px;
+  padding: 24px 20px 80px;
   font-family: 'DM Sans', sans-serif;
   overflow-y: auto;
   box-sizing: border-box;
@@ -1267,7 +1267,8 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
+  transition: all 0.3s ease-in-out;
 }
 
 .app-title {
@@ -1383,16 +1384,17 @@ export default defineComponent({
   flex: 1;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 15px;
-  padding: 15px;
+  padding: 24px;
   min-height: 400px;
   font-size: 0.9rem;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   overflow-y: auto;
+  transition: all 0.3s ease-in-out;
 }
 
 .section-title {
   font-size: 1.4rem;
-  margin-bottom: 15px;
+  margin-bottom: 24px;
   color: var(--heading-color);
 }
 
@@ -1484,10 +1486,11 @@ export default defineComponent({
 .activity-item {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease-in-out;
 }
 
 .activity-icon {

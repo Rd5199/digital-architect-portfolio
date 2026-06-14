@@ -13,7 +13,7 @@
         <div class="logo-circle">
           <i class="fas fa-futbol"></i>
         </div>
-        <h1>Non-League Network</h1>
+        <h1>Sports Community</h1>
       </div>
       
       <div class="welcome-text">

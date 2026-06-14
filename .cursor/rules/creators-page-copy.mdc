@@ -1,0 +1,57 @@
+---
+description: SEO and conversion copy standards for the creators landing page and creator audience messaging
+globs: src/views/CreatorsPage.vue,src/components/CreatorContactForm.vue,src/router/index.ts
+alwaysApply: false
+---
+
+# Creators page — copy & SEO (market research, 2026)
+
+## Audience pain (lead with this)
+
+- Creators rent attention on social — algorithms, reach drops, and platform fees erode income.
+- They want **ownership**: App Store listing under their name, direct notifications, exportable audience.
+- DIY builders (FanStack, Tenimal) promise speed; white-glove shops (Tribed) promise “your audience, your app.” DigitalArchitect sits between: **custom build, partnership pricing, human scope.**
+
+## Positioning
+
+- **We are**: a dev partner that ships branded creator apps (membership, community, storefront, courses).
+- **We are not**: a generic agency, a no-code template, or “we handle the tech” without specifics.
+
+## SEO keywords (use naturally, never stuff)
+
+Primary: custom creator app, membership app for creators, influencer app development, branded mobile app, fan community app.
+
+Secondary: App Store launch, recurring revenue for creators, own your audience, digital products for influencers, revenue split app development.
+
+## Hero formula
+
+1. **Kicker** — category label (`Creator app development`), not vague audience tag.
+2. **H1** — problem or ownership hook (`Stop renting your audience on social.`).
+3. **Typed accent** — concrete outcomes (membership app, home screen, subscribers, revenue ownership).
+4. **Lead** — what we ship + what creator brings + what we handle (design, build, App Store, payments).
+5. **Bullets** — pricing model, timeline, ownership proof (App Store listing).
+6. **CTA** — `Apply for a build` (primary), `How it works` (secondary).
+
+## Tone
+
+- Direct, minimal, confident. Short sentences. No “agency theatre,” “give them a home,” or empty “we handle the tech.”
+- Prefer **specifics**: weeks to launch, split vs upfront, App Store, push notifications, subscriptions.
+- British spelling optional where site already uses it (`monetise` / `launch` — stay consistent per page).
+
+## Section headlines
+
+- What we build → product types + retention (`fans return to`).
+- How it works → steps ending in App Store / launch.
+- Why an app → algorithm risk vs owned channel.
+- Apply → scarcity + what happens after submit (scope, timeline, pricing path).
+
+## Meta title / description
+
+- Title: include **Custom Creator Apps** + product types + brand.
+- Description: iOS/Android/web, membership + community, pricing models, App Store — under ~160 characters where possible.
+
+## Competitor patterns to borrow (not copy)
+
+- “Your audience, your app” ownership frame (Tribed, Tenimal).
+- Recurring revenue + multiple monetization streams (FanStack).
+- Low-friction application, clear timeline, written quote before commit.

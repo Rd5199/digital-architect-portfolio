@@ -1,12 +1,19 @@
 <template>
-  <div class="models-showcase">
-    <div class="models-showcase-container">
-      <div class="header-section">
-        <h2>3D Models Showcase</h2>
-        <p>Explore my 3D modeling skills with these interactive examples.</p>
-      </div>
+  <div class="models-page">
+    <div class="grain-layer models-page__grain" aria-hidden="true" />
 
-      <div class="showcase-content">
+    <main class="models-page__main">
+      <div class="models-showcase-container">
+        <header class="models-hero">
+          <p class="models-hero__kicker">3D Models</p>
+          <h1 class="models-hero__title">Interactive showcase</h1>
+          <p class="models-hero__lead">
+            Web-ready 3D assets and real-time viewers — the same stack we use for product demos,
+            configurators, and immersive marketing on client projects.
+          </p>
+        </header>
+
+        <div class="showcase-content">
         <div class="model-viewer">
           <div class="model-display" ref="modelContainer" :class="{ 'is-dragging': isUserInteracting }">
             <!-- 3D model will be rendered here -->
@@ -49,9 +56,8 @@
           <div class="info-section">
             <h3>About These Models</h3>
             <p>
-              This collection showcases various 3D models created for different
-              projects. These models demonstrate my ability to work with 3D graphics,
-              model optimization, and interactive visualization techniques.
+              Sample assets from client and internal projects — optimized meshes, tuned lighting,
+              and interactive controls built for the web with Blender and Three.js.
             </p>
           </div>
 
@@ -131,20 +137,26 @@
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </main>
+
+    <Footer />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue';
+import Footer from './Footer.vue';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import type { OrbitControls as OrbitControlsType } from 'three/examples/jsm/controls/OrbitControls.js';
 import SimpleModelGenerator from '../utils/SimpleModelGenerator';
 
 export default defineComponent({
   name: 'ModelsShowcase',
+  components: { Footer },
   setup() {
     const modelContainer = ref<HTMLElement | null>(null);
     const activeModel = ref('spaceship');
@@ -168,6 +180,8 @@ export default defineComponent({
     let loader: GLTFLoader;
     let animationFrameId: number | null = null;
     let autoRotationSpeed = 0.005; // Speed of auto-rotation
+    let loadRequestId = 0;
+    let loadScheduledTimeout: ReturnType<typeof setTimeout> | null = null;
 
     // Add helper variables for visual feedback
     let interactionHelper: {
@@ -180,13 +194,6 @@ export default defineComponent({
       autoRotateTimeout: null
     };
 
-    // Add direct rotation tracking variables
-    const mousePosition = {
-      x: 0,
-      y: 0,
-      isDragging: false
-    };
-
     // Calculate slider progress width
     const sliderProgressWidth = computed(() => {
       const index = models.value.findIndex(model => model.id === activeModel.value);
@@ -194,14 +201,19 @@ export default defineComponent({
     });
 
     const initThreeJs = () => {
-      if (!modelContainer.value) return;
+      if (!modelContainer.value) {
+        console.error('Model container not found');
+        return;
+      }
+      
+      try {
 
       // Set up scene
       scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0a18);
+      scene.background = new THREE.Color(0x070707);
 
       // Add a grid for better depth perception
-      const gridHelper = new THREE.GridHelper(10, 20, 0x3498db, 0x222222);
+      const gridHelper = new THREE.GridHelper(10, 20, 0xffd601, 0x1a1a1a);
       gridHelper.position.y = -1.5;
       scene.add(gridHelper);
 
@@ -242,20 +254,19 @@ export default defineComponent({
       
       // Apply critical styles
       const canvas = renderer.domElement;
+      canvas.classList.add('interactive-canvas');
       canvas.style.position = 'absolute';
       canvas.style.top = '0';
       canvas.style.left = '0';
       canvas.style.width = '100%';
       canvas.style.height = '100%';
-      canvas.style.pointerEvents = 'auto'; 
-      canvas.style.zIndex = '5'; // Higher z-index
+      canvas.style.zIndex = '1';
       canvas.style.outline = 'none';
-      canvas.style.touchAction = 'none';
       
       modelContainer.value.appendChild(canvas);
 
-      // Set up controls
-      controls = new OrbitControls(camera, canvas);
+      // Bind controls to the container so drag works even when canvas ignores pointer events
+      controls = new OrbitControls(camera, modelContainer.value);
       controls.enableDamping = true;
       controls.dampingFactor = 0.1;
       controls.rotateSpeed = 1.5; // Increase rotation speed
@@ -272,16 +283,6 @@ export default defineComponent({
       controls.addEventListener('start', handleUserInteractionStart);
       controls.addEventListener('end', handleUserInteractionEnd);
       
-      // Manual direct event handling as a fallback
-      canvas.addEventListener('mousedown', handleMouseDown);
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-      
-      // Touch support
-      canvas.addEventListener('touchstart', handleTouchStart);
-      canvas.addEventListener('touchmove', handleTouchMove);
-      canvas.addEventListener('touchend', handleTouchEnd);
-      
       // Set up lighting for better visuals
       // Ambient light
       const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
@@ -296,11 +297,11 @@ export default defineComponent({
       scene.add(directionalLight1);
 
       // Secondary colored lights for visual interest
-      const directionalLight2 = new THREE.DirectionalLight(0x3498db, 0.5);
+      const directionalLight2 = new THREE.DirectionalLight(0xffd601, 0.35);
       directionalLight2.position.set(-5, -2, -5);
       scene.add(directionalLight2);
 
-      const pointLight = new THREE.PointLight(0xe74c3c, 0.5, 10);
+      const pointLight = new THREE.PointLight(0xfff4c2, 0.4, 10);
       pointLight.position.set(2, 0, -2);
       scene.add(pointLight);
 
@@ -318,6 +319,10 @@ export default defineComponent({
 
       // Start animation loop
       animate();
+      } catch (error) {
+        console.error('Error initializing Three.js:', error);
+        isLoading.value = false;
+      }
     };
 
     // Handler for user interaction start
@@ -387,16 +392,22 @@ export default defineComponent({
       }
     };
 
-    // Programmatically rotate the model
+    // Programmatically rotate the camera orbit
     const rotateModel = (deltaY: number, deltaX: number) => {
-      if (!controls) return;
+      if (!controls || !camera) return;
       
       handleUserInteractionStart();
-      (controls as any).rotateLeft(deltaY);
-      (controls as any).rotateUp(deltaX);
+
+      const offset = camera.position.clone();
+      const spherical = new THREE.Spherical().setFromVector3(offset);
+      spherical.theta -= deltaY;
+      spherical.phi += deltaX;
+      spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+      offset.setFromSpherical(spherical);
+      camera.position.copy(offset);
+      camera.lookAt(controls.target);
       controls.update();
       
-      // Use timeout to simulate end of interaction
       if (interactionHelper.autoRotateTimeout !== null) {
         clearTimeout(interactionHelper.autoRotateTimeout);
       }
@@ -408,10 +419,11 @@ export default defineComponent({
 
     // Zoom the camera
     const zoomCamera = (delta: number) => {
-      if (!controls) return;
+      if (!controls || !camera) return;
       
       handleUserInteractionStart();
-      (controls as any).dollyIn(1 + Math.abs(delta) * 0.1 * (delta > 0 ? 1 : -1));
+      const direction = camera.position.clone().normalize();
+      camera.position.add(direction.multiplyScalar(delta));
       controls.update();
       
       // Use timeout to simulate end of interaction
@@ -435,190 +447,124 @@ export default defineComponent({
       controls.update();
     };
 
-    const loadModel = (modelId: string) => {
-      if (!modelId) return;
+    const createProceduralModel = (modelId: string): THREE.Group => {
+      switch (modelId) {
+        case 'mars-rover':
+          return SimpleModelGenerator.createMarsRover();
+        case 'space-station':
+          return SimpleModelGenerator.createSpaceStation();
+        case 'satellite':
+          return SimpleModelGenerator.createSatellite();
+        case 'planet':
+          return SimpleModelGenerator.createPlanet();
+        case 'telescope':
+          return SimpleModelGenerator.createTelescope();
+        default:
+          return SimpleModelGenerator.createSpaceship();
+      }
+    };
 
-      // Show loading state
+    const enhanceMeshMaterials = (model: THREE.Object3D) => {
+      model.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+
+        object.castShadow = true;
+        object.receiveShadow = true;
+
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        const clonedMaterials = materials.map((material) => {
+          const cloned = material.clone();
+          if (cloned instanceof THREE.MeshStandardMaterial) {
+            cloned.metalness = Math.min(1, cloned.metalness + 0.15);
+            cloned.roughness = Math.max(0.1, cloned.roughness - 0.08);
+            cloned.envMapIntensity = 0.8;
+          }
+          return cloned;
+        });
+
+        object.material = clonedMaterials.length === 1 ? clonedMaterials[0] : clonedMaterials;
+      });
+    };
+
+    const fitModelToView = (model: THREE.Group) => {
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      model.position.sub(center);
+
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      if (maxDim > 0) {
+        const scale = 2 / maxDim;
+        model.scale.set(scale, scale, scale);
+      }
+    };
+
+    const setCameraForModel = (modelId: string) => {
+      controls.reset();
+
+      switch (modelId) {
+        case 'mars-rover':
+          camera.position.set(4, 3, 4);
+          break;
+        case 'space-station':
+          camera.position.set(5, 2, 5);
+          break;
+        case 'satellite':
+          camera.position.set(3, 2, 3);
+          break;
+        case 'planet':
+          camera.position.set(4, 1, 4);
+          break;
+        case 'telescope':
+          camera.position.set(3, 2, 5);
+          break;
+        default:
+          camera.position.set(4, 2, 4);
+      }
+
+      camera.lookAt(0, 0, 0);
+    };
+
+    const loadModel = (modelId: string) => {
+      if (!modelId || !scene) return;
+
+      const requestId = ++loadRequestId;
       isLoading.value = true;
+
+      if (loadScheduledTimeout !== null) {
+        clearTimeout(loadScheduledTimeout);
+        loadScheduledTimeout = null;
+      }
 
       if (currentModel) {
         scene.remove(currentModel);
         currentModel = null;
       }
 
-      // Create temporary model (spinning cube) while loading
-      const tempGeometry = new THREE.BoxGeometry(1, 1, 1);
-      const tempMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0x3498db,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.7
-      });
-      const tempCube = new THREE.Mesh(tempGeometry, tempMaterial);
-      
-      // Add animation to the loading cube
-      const cubeAnimation = () => {
-        if (tempCube && scene.children.includes(tempCube)) {
-          tempCube.rotation.x += 0.03;
-          tempCube.rotation.y += 0.02;
-          tempCube.rotation.z += 0.01;
-          requestAnimationFrame(cubeAnimation);
-        }
-      };
-      
-      scene.add(tempCube);
-      currentModel = tempCube;
-      cubeAnimation();
+      // Brief delay so the loading overlay can paint before sync model build
+      loadScheduledTimeout = setTimeout(() => {
+        loadScheduledTimeout = null;
+        if (requestId !== loadRequestId) return;
 
-      // Generate the appropriate model based on ID
-      let model: THREE.Group;
-      
-      // Use setTimeout to give the loading indicator time to display
-      setTimeout(() => {
-      switch (modelId) {
-        case 'spaceship':
-          model = SimpleModelGenerator.createSpaceship();
-          break;
-        case 'mars-rover':
-          model = SimpleModelGenerator.createMarsRover();
-          break;
-        case 'space-station':
-          model = SimpleModelGenerator.createSpaceStation();
-          break;
-        case 'satellite':
-          model = SimpleModelGenerator.createSatellite();
-          break;
-        case 'planet':
-          model = SimpleModelGenerator.createPlanet();
-          break;
-        case 'telescope':
-          model = SimpleModelGenerator.createTelescope();
-          break;
-        default:
-          model = SimpleModelGenerator.createSpaceship();
-      }
-      
-      // Remove temporary cube
-      scene.remove(tempCube);
-        
-        // Enable shadows for all meshes in the model
-        model.traverse((object) => {
-          if (object instanceof THREE.Mesh) {
-            object.castShadow = true;
-            object.receiveShadow = true;
-            
-            // Enhance materials for better 3D look
-            if (object.material) {
-              // Create a copy of the material to avoid modifying shared materials
-              object.material = object.material.clone();
-              
-              if (object.material instanceof THREE.MeshStandardMaterial) {
-                // Procedurally create a normal map
-                const normalMapSize = 512;
-                const canvas = document.createElement('canvas');
-                canvas.width = normalMapSize;
-                canvas.height = normalMapSize;
-                const ctx = canvas.getContext('2d');
-                
-                if (ctx) {
-                  // Generate a simple noise pattern for the normal map
-                  ctx.fillStyle = '#8888ff'; // Neutral normal map color
-                  ctx.fillRect(0, 0, normalMapSize, normalMapSize);
-                  
-                  // Add some noise
-                  for (let i = 0; i < 5000; i++) {
-                    const x = Math.random() * normalMapSize;
-                    const y = Math.random() * normalMapSize;
-                    const size = 1 + Math.random() * 3;
-                    const color = Math.random() > 0.5 ? '#aaaaff' : '#6666ff';
-                    
-                    ctx.fillStyle = color;
-                    ctx.beginPath();
-                    ctx.arc(x, y, size, 0, Math.PI * 2);
-                    ctx.fill();
-                  }
-                  
-                  const normalMap = new THREE.CanvasTexture(canvas);
-                  normalMap.wrapS = THREE.RepeatWrapping;
-                  normalMap.wrapT = THREE.RepeatWrapping;
-                  normalMap.repeat.set(2, 2);
-                  object.material.normalMap = normalMap;
-                  object.material.normalScale.set(0.5, 0.5);
-                }
-                
-                // Enhance material properties
-                if (object.material.metalness < 0.5) {
-                  object.material.metalness += 0.2;
-                }
-                
-                if (object.material.roughness > 0.3) {
-                  object.material.roughness -= 0.1;
-                }
-                
-                // Add environment mapping for realistic reflections
-                object.material.envMapIntensity = 0.8;
-              }
-            }
-          }
-        });
-      
-      // Center the model
-      const box = new THREE.Box3().setFromObject(model);
-      const center = box.getCenter(new THREE.Vector3());
-      model.position.sub(center);
-      
-      // Scale the model to fit view
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2 / maxDim;
-      model.scale.set(scale, scale, scale);
-        
-        // Add initial slight tilt for visual interest
-        model.rotation.x = 0.1;
-        model.rotation.y = 0.3;
-      
-      scene.add(model);
-      currentModel = model;
-      
-        // Set appropriate camera positions based on model type
-      controls.reset();
-        
-        switch (modelId) {
-          case 'spaceship':
-            camera.position.set(4, 2, 4);
-            break;
-          case 'mars-rover':
-            camera.position.set(4, 3, 4);
-            break;
-          case 'space-station':
-            camera.position.set(5, 2, 5);
-            break;
-          case 'satellite':
-            camera.position.set(3, 2, 3);
-            break;
-          case 'planet':
-            camera.position.set(4, 1, 4);
-            break;
-          case 'telescope':
-            camera.position.set(3, 2, 5);
-            break;
-          default:
-            camera.position.set(4, 2, 4);
+        try {
+          const model = createProceduralModel(modelId);
+          enhanceMeshMaterials(model);
+          fitModelToView(model);
+          model.rotation.x = 0.1;
+          model.rotation.y = 0.3;
+
+          scene.add(model);
+          currentModel = model;
+          setCameraForModel(modelId);
+          controls.autoRotate = true;
+        } catch (error) {
+          console.error('Failed to load 3D model:', modelId, error);
         }
-        
-        camera.lookAt(0, 0, 0);
-        
-        // Force auto-rotation for a few seconds
-        controls.autoRotate = true;
-        setTimeout(() => {
-          if (!isUserInteracting.value) {
-            controls.autoRotate = true;
-          }
-          
-          // Model loaded, hide loading indicator
+
+        if (requestId === loadRequestId) {
           isLoading.value = false;
-        }, 1000);
-      }, 500); // Short delay for loading state
+        }
+      }, 32);
     };
 
     const handleResize = () => {
@@ -640,8 +586,8 @@ export default defineComponent({
         controls.update();
       }
       
-      // Rotate temp cube if it's still showing
-      if (currentModel && currentModel.type === 'Mesh') {
+      // Rotate temp cube if it's still showing (legacy mesh placeholder)
+      if (currentModel && currentModel.type === 'Mesh' && currentModel.geometry?.type === 'BoxGeometry') {
         currentModel.rotation.x += 0.01;
         currentModel.rotation.y += 0.01;
       }
@@ -673,102 +619,6 @@ export default defineComponent({
       selectModel(models.value[prevIndex].id);
     };
 
-    // Direct mouse handling functions
-    const handleMouseDown = (event: MouseEvent) => {
-      console.log('Manual mousedown captured');
-      mousePosition.isDragging = true;
-      mousePosition.x = event.clientX;
-      mousePosition.y = event.clientY;
-      handleUserInteractionStart();
-      
-      // Prevent events from reaching other elements
-      event.preventDefault();
-      event.stopPropagation();
-    };
-    
-    const handleMouseMove = (event: MouseEvent) => {
-      if (!mousePosition.isDragging) return;
-      
-      const deltaX = event.clientX - mousePosition.x;
-      const deltaY = event.clientY - mousePosition.y;
-      
-      // Manual rotation if OrbitControls isn't working
-      if (currentModel && deltaX !== 0 || deltaY !== 0) {
-        // Apply manual rotation (fallback if OrbitControls doesn't work)
-        if (currentModel instanceof THREE.Group) {
-          currentModel.rotation.y += deltaX * 0.01;
-          currentModel.rotation.x += deltaY * 0.01;
-        }
-        
-        // Also try to rotate via OrbitControls
-        if (controls) {
-          (controls as any).rotateLeft(deltaX * 0.005);
-          (controls as any).rotateUp(deltaY * 0.005);
-          controls.update();
-        }
-      }
-      
-      mousePosition.x = event.clientX;
-      mousePosition.y = event.clientY;
-      
-      // Prevent events from reaching other elements
-      event.preventDefault();
-      event.stopPropagation();
-    };
-    
-    const handleMouseUp = () => {
-      console.log('Manual mouseup captured');
-      mousePosition.isDragging = false;
-      handleUserInteractionEnd();
-    };
-    
-    // Touch event handlers
-    const handleTouchStart = (event: TouchEvent) => {
-      if (event.touches.length === 1) {
-        mousePosition.isDragging = true;
-        mousePosition.x = event.touches[0].clientX;
-        mousePosition.y = event.touches[0].clientY;
-        handleUserInteractionStart();
-      }
-      
-      // Prevent events from reaching other elements
-      event.preventDefault();
-    };
-    
-    const handleTouchMove = (event: TouchEvent) => {
-      if (!mousePosition.isDragging || event.touches.length !== 1) return;
-      
-      const touch = event.touches[0];
-      const deltaX = touch.clientX - mousePosition.x;
-      const deltaY = touch.clientY - mousePosition.y;
-      
-      // Manual rotation
-      if (currentModel && (deltaX !== 0 || deltaY !== 0)) {
-        if (currentModel instanceof THREE.Group) {
-          currentModel.rotation.y += deltaX * 0.01;
-          currentModel.rotation.x += deltaY * 0.01;
-        }
-        
-        // Also try to rotate via OrbitControls
-        if (controls) {
-          (controls as any).rotateLeft(deltaX * 0.005);
-          (controls as any).rotateUp(deltaY * 0.005);
-          controls.update();
-        }
-      }
-      
-      mousePosition.x = touch.clientX;
-      mousePosition.y = touch.clientY;
-      
-      // Prevent events from reaching other elements
-      event.preventDefault();
-    };
-    
-    const handleTouchEnd = () => {
-      mousePosition.isDragging = false;
-      handleUserInteractionEnd();
-    };
-
     onMounted(() => {
       initThreeJs();
     });
@@ -780,15 +630,6 @@ export default defineComponent({
       
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-      
-      if (renderer && renderer.domElement) {
-        renderer.domElement.removeEventListener('mousedown', handleMouseDown);
-        renderer.domElement.removeEventListener('touchstart', handleTouchStart);
-        renderer.domElement.removeEventListener('touchmove', handleTouchMove);
-        renderer.domElement.removeEventListener('touchend', handleTouchEnd);
-      }
       
       if (controls) {
         controls.removeEventListener('start', handleUserInteractionStart);
@@ -798,6 +639,11 @@ export default defineComponent({
       
       if (interactionHelper.autoRotateTimeout !== null) {
         clearTimeout(interactionHelper.autoRotateTimeout);
+      }
+
+      if (loadScheduledTimeout !== null) {
+        clearTimeout(loadScheduledTimeout);
+        loadScheduledTimeout = null;
       }
       
       if (renderer && modelContainer.value) {
@@ -841,42 +687,64 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.models-showcase {
-  padding: 4rem 0;
-  color: #fff;
+.models-page {
+  position: relative;
+  min-height: 100vh;
+  background: var(--editorial-surface, #070707);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  isolation: isolate;
+}
+
+.models-page__grain {
+  z-index: 0;
+}
+
+.models-page__main {
+  position: relative;
+  z-index: 1;
+  padding: calc(var(--site-header-offset, 4.75rem) + 2.5rem) 0 3rem;
 }
 
 .models-showcase-container {
-  max-width: 1200px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 0 1.5rem;
 }
 
-.header-section {
-  text-align: center;
-  margin-bottom: 3rem;
+.models-hero {
+  max-width: 42rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-.header-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  background: linear-gradient(45deg, #3498db, #9b59b6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.models-hero__kicker {
+  margin: 0 0 0.75rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 214, 1, 0.62);
 }
 
-.header-section p {
-  font-size: 1.2rem;
-  color: #aaa;
-  max-width: 700px;
-  margin: 0 auto;
+.models-hero__title {
+  margin: 0 0 1rem;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #ffd601;
+}
+
+.models-hero__lead {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.58);
 }
 
 .showcase-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: clamp(2rem, 4vw, 3rem);
   align-items: start;
 }
 
@@ -886,13 +754,14 @@ export default defineComponent({
 
 .model-display {
   height: 400px;
-  background-color: rgba(16, 16, 40, 0.5);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   overflow: hidden;
   position: relative;
   cursor: grab;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   touch-action: none !important;
   z-index: 1;
   user-select: none;
@@ -911,13 +780,12 @@ export default defineComponent({
 
 .model-display.is-dragging {
   cursor: grabbing;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-  background-color: rgba(20, 20, 50, 0.6);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 214, 1, 0.22);
 }
 
 .model-display:active {
   cursor: grabbing;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
 .model-display::after {
@@ -926,19 +794,20 @@ export default defineComponent({
   bottom: 10px;
   left: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
+  background: rgba(7, 7, 7, 0.82);
+  color: rgba(255, 255, 255, 0.78);
   padding: 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.78rem;
   text-align: center;
-  opacity: 0.7;
+  opacity: 0.85;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
 
 .model-display:hover::after {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .model-tabs {
@@ -950,23 +819,28 @@ export default defineComponent({
 
 .model-tabs button {
   padding: 0.6rem 1rem;
-  background-color: rgba(16, 16, 40, 0.5);
-  color: #fff;
-  border: none;
-  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   flex: 1;
   min-width: max-content;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  font-family: inherit;
 }
 
 .model-tabs button:hover {
-  background-color: rgba(52, 152, 219, 0.3);
+  background-color: rgba(255, 214, 1, 0.08);
+  border-color: rgba(255, 214, 1, 0.28);
+  color: #ffd601;
 }
 
 .model-tabs button.active {
-  background-color: #3498db;
+  background-color: rgba(255, 214, 1, 0.14);
+  border-color: rgba(255, 214, 1, 0.45);
+  color: #ffd601;
 }
 
 .slider-controls {
@@ -978,9 +852,9 @@ export default defineComponent({
 }
 
 .slider-control {
-  background: rgba(52, 152, 219, 0.3);
-  border: none;
-  color: white;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.88);
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
@@ -988,11 +862,13 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .slider-control:hover {
-  background: rgba(52, 152, 219, 0.6);
+  background: rgba(255, 214, 1, 0.12);
+  border-color: rgba(255, 214, 1, 0.35);
+  color: #ffd601;
 }
 
 .slider-bar {
@@ -1007,7 +883,7 @@ export default defineComponent({
 .slider-progress {
   position: absolute;
   height: 100%;
-  background: linear-gradient(to right, #3498db, #9b59b6);
+  background: linear-gradient(to right, rgba(255, 214, 1, 0.45), #ffd601);
   transition: width 0.3s ease;
 }
 
@@ -1018,14 +894,16 @@ export default defineComponent({
 }
 
 .info-section h3 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   margin-bottom: 1rem;
-  color: #3498db;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #ffd601;
 }
 
 .info-section p {
-  color: #ddd;
-  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.65;
 }
 
 .info-grid {
@@ -1035,21 +913,24 @@ export default defineComponent({
 }
 
 .info-block {
-  background-color: rgba(16, 16, 40, 0.5);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1.5rem;
   border-radius: 12px;
-  transition: transform 0.3s ease;
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
 .info-block:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
+  border-color: rgba(255, 214, 1, 0.2);
 }
 
 .info-icon {
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(45deg, #3498db, #9b59b6);
-  border-radius: 12px;
+  background: rgba(255, 214, 1, 0.12);
+  border: 1px solid rgba(255, 214, 1, 0.28);
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1057,14 +938,15 @@ export default defineComponent({
 }
 
 .info-icon i {
-  font-size: 1.5rem;
-  color: white;
+  font-size: 1.35rem;
+  color: #ffd601;
 }
 
 .info-block h4 {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   margin-bottom: 1rem;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
 }
 
 .info-block ul {
@@ -1074,15 +956,17 @@ export default defineComponent({
 
 .info-block li {
   margin-bottom: 0.7rem;
-  color: #bbb;
+  color: rgba(255, 255, 255, 0.58);
   display: flex;
   align-items: center;
+  font-size: 0.92rem;
+  line-height: 1.45;
 }
 
 .info-block li i {
-  color: #3498db;
+  color: rgba(255, 214, 1, 0.75);
   margin-right: 0.5rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .applications {
@@ -1100,26 +984,28 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgba(16, 16, 40, 0.5);
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 1rem;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .app-icon:hover {
-  background-color: rgba(52, 152, 219, 0.3);
+  background-color: rgba(255, 214, 1, 0.08);
+  border-color: rgba(255, 214, 1, 0.22);
 }
 
 .app-icon i {
   font-size: 1.5rem;
-  color: #3498db;
+  color: #ffd601;
   margin-bottom: 0.5rem;
 }
 
 .app-icon span {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   text-align: center;
-  color: #ddd;
+  color: rgba(255, 255, 255, 0.62);
 }
 
 /* Add rotation hint */
@@ -1131,7 +1017,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 214, 1, 0.72);
   pointer-events: none;
   transition: opacity 0.5s ease, transform 0.5s ease;
   z-index: 10; /* Above canvas */
@@ -1144,9 +1030,9 @@ export default defineComponent({
 }
 
 .rotation-hint span {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 500;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .rotation-hint.fade-out {
@@ -1157,7 +1043,7 @@ export default defineComponent({
 @keyframes pulse {
   0% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.65;
   }
   50% {
     transform: scale(1.1);
@@ -1165,7 +1051,7 @@ export default defineComponent({
   }
   100% {
     transform: scale(1);
-    opacity: 0.7;
+    opacity: 0.65;
   }
 }
 
@@ -1173,7 +1059,7 @@ export default defineComponent({
   .showcase-content {
     grid-template-columns: 1fr;
   }
-  
+
   .model-display {
     height: 350px;
   }
@@ -1191,7 +1077,7 @@ export default defineComponent({
     padding-bottom: 0.5rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .model-tabs button {
     flex: 0 0 auto;
   }
@@ -1208,21 +1094,23 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 20, 0.7);
-  color: white;
-  z-index: 20; /* Above everything */
+  background: rgba(7, 7, 7, 0.88);
+  color: rgba(255, 255, 255, 0.9);
+  z-index: 20;
+  pointer-events: none;
   animation: fadeIn 0.3s ease;
 }
 
 .loading-indicator i {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #3498db;
+  color: #ffd601;
 }
 
 .loading-indicator span {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 @keyframes fadeIn {

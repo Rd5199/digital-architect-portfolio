@@ -1,14 +1,17 @@
 <template>
-  <div class="home">
-    <Hero />
-    <About />
-    <Services />
-    <Process />
-    <Portfolio />
-    <TechStack />
-    <Testimonials />
-    <Contact />
-    <Footer />
+  <div class="home home-editorial">
+    <div class="grain-layer home-editorial__grain" aria-hidden="true" />
+
+    <div class="home-editorial__inner">
+      <Hero />
+      <About />
+      <AiAudit />
+      <Portfolio />
+      <Testimonials />
+      <TechStack />
+      <Contact />
+      <Footer />
+    </div>
   </div>
 </template>
 
@@ -16,8 +19,7 @@
 import { defineComponent } from 'vue';
 import Hero from './Hero.vue';
 import About from './About.vue';
-import Services from './Services.vue';
-import Process from './Process.vue';
+import AiAudit from './AiAudit.vue';
 import Portfolio from './Portfolio.vue';
 import TechStack from './TechStack.vue';
 import Testimonials from './Testimonials.vue';
@@ -29,8 +31,7 @@ export default defineComponent({
   components: {
     Hero,
     About,
-    Services,
-    Process,
+    AiAudit,
     Portfolio,
     TechStack,
     Testimonials,
@@ -41,7 +42,41 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.home {
+.home-editorial {
+  position: relative;
   width: 100%;
+  background: var(--editorial-surface);
+  isolation: isolate;
+  /* Stronger film grain — default vars read too flat on #070707 */
+  --grain-opacity: 0.58;
+  --grain-size: 140px 140px;
+  --grain-filter: contrast(195%) brightness(128%);
+  --grain-blend-mode: overlay;
 }
-</style> 
+
+.home-editorial__grain {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-editorial__inner {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .home-editorial {
+    --grain-opacity: 0.52;
+    --grain-size: 120px 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-editorial {
+    --grain-opacity: 0.4;
+    --grain-filter: contrast(165%) brightness(118%);
+  }
+}
+</style>

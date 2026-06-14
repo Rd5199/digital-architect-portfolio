@@ -89,7 +89,7 @@
         <section class="dev-legal-section">
           <h2>11. Contact Us</h2>
           <p>If you have any questions about this Privacy Policy, please contact us at:</p>
-          <p>Email: info@digitalarchitect.com</p>
+          <p>Email: info@mydigitalarchitect.com</p>
           <p>Address: 123 Web Design Street, Digital City, DC 12345</p>
         </section>
       </div>

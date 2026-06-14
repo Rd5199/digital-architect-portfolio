@@ -1,8 +1,8 @@
 <template>
   <div class="mini-project-container">
     <div class="demo-controls">
-      <h3>Savour Societies Platform Demo</h3>
-      <p>This is an interactive demo of the Savour Societies platform. Toggle between user views below.</p>
+      <h3>Social Dining Demo</h3>
+      <p>This is an interactive demo of a social dining platform. Toggle between user views below.</p>
       
       <div class="view-controls">
         <button 
@@ -31,13 +31,13 @@
           <span class="control yellow"></span>
           <span class="control green"></span>
         </div>
-        <div class="frame-title">{{ currentView === 'diner' ? 'Savour Societies - Diner Dashboard' : 'Savour Societies - Restaurant Portal' }}</div>
+        <div class="frame-title">{{ currentView === 'diner' ? 'Social Dining - Diner Dashboard' : 'Social Dining - Restaurant Portal' }}</div>
       </div>
       
       <!-- Diner View -->
       <div v-if="currentView === 'diner'" class="platform-content diner-view">
         <div class="platform-sidebar">
-          <div class="platform-logo">Savour Societies</div>
+          <div class="platform-logo">Social Dining</div>
           <nav class="platform-nav">
             <a href="#" class="nav-item active"><i class="fas fa-home"></i> Dashboard</a>
             <a href="#" class="nav-item"><i class="fas fa-calendar"></i> Upcoming Meals</a>
@@ -157,7 +157,7 @@
       <!-- Restaurant View -->
       <div v-if="currentView === 'restaurant'" class="platform-content restaurant-view">
         <div class="platform-sidebar restaurant-sidebar">
-          <div class="platform-logo">Savour Societies</div>
+          <div class="platform-logo">Social Dining</div>
           <div class="restaurant-profile">
             <div class="restaurant-avatar"><i class="fas fa-utensils"></i></div>
             <div class="restaurant-name">Casa Bella Italian</div>
@@ -293,7 +293,7 @@
                 <div class="activity-item">
                   <div class="activity-icon"><i class="fas fa-comment"></i></div>
                   <div class="activity-content">
-                    <p><strong>New Message:</strong> Savour Societies team: "Your Chef's Tasting Menu has been featured"</p>
+                    <p><strong>New Message:</strong> Platform team: "Your Chef's Tasting Menu has been featured"</p>
                     <span class="activity-time">Yesterday</span>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ export default defineComponent({
 .mini-project-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 40px 32px;
 }
 
 .demo-controls {
@@ -720,8 +720,8 @@ export default defineComponent({
 .recommendations {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .recommendation-card {
@@ -729,7 +729,7 @@ export default defineComponent({
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  transition: all 0.3s ease-in-out;
 }
 
 .recommendation-card:hover {
@@ -748,7 +748,7 @@ export default defineComponent({
 .rec-image-3 { background-image: url('https://source.unsplash.com/random/400x200/?vegetarian'); }
 
 .rec-content {
-  padding: 1.2rem;
+  padding: 24px;
 }
 
 .rec-content h4 {
@@ -794,8 +794,8 @@ export default defineComponent({
 .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 20px;
+  margin-top: 32px;
 }
 
 .stat-card {

@@ -1,0 +1,58 @@
+---
+description: Pill-shaped button styling for all site CTAs and dev-btn variants
+globs: src/**/*.{css,vue}
+alwaysApply: true
+---
+
+# Pill-Shaped Buttons
+
+All primary site buttons must use **pill** (fully rounded) styling — not square or lightly rounded corners.
+
+## Token
+
+Use the shared CSS variable from `:root` in `src/assets/main.css`:
+
+```css
+--border-radius-pill: 9999px;
+```
+
+## Classes
+
+Apply pill radius to all button/CTA classes:
+
+- `.dev-btn`
+- `.dev-btn-primary`
+- `.dev-btn-outline`
+- `.dev-btn-secondary`
+- `.dev-apply-btn`, `.dev-apply-cta-btn`
+- Header/mobile CTA links using `dev-btn` classes
+
+```css
+border-radius: var(--border-radius-pill);
+```
+
+## Do
+
+- Use `var(--border-radius-pill)` for new buttons and CTA links
+- Keep existing padding (`0.8rem 1.5rem` or similar) so pills look balanced
+- Extend pill styling when adding new `.dev-btn-*` variants in `main.css`
+
+## Don't
+
+- Use `var(--border-radius)` (8px) or hardcoded values like `4px`, `5px`, `8px` on site CTAs
+- Override pill radius in component scoped styles unless there is a strong reason
+
+## Example
+
+```css
+/* ✅ GOOD */
+.dev-btn-new {
+  border-radius: var(--border-radius-pill);
+}
+
+/* ❌ BAD */
+.dev-btn-new {
+  border-radius: var(--border-radius);
+  border-radius: 8px;
+}
+```

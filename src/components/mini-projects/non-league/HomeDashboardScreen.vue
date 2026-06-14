@@ -11,7 +11,7 @@
     <div class="header">
       <div class="greeting">
         <h1>Hello, Michael</h1>
-        <p>Welcome to your Non-League Network</p>
+        <p>Welcome to your sports community app</p>
       </div>
       <div class="profile-icon" @click="navigateTo('ProfileScreen')">
         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile" />

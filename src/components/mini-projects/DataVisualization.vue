@@ -95,7 +95,7 @@
     <div class="mini-project-description">
       <h2>About This Component</h2>
       <p>
-        This interactive data visualization component from the SaaS Dashboard project demonstrates a
+        This interactive data visualization component from the SaaS dashboard demo demonstrates a
         business metrics tracking system with real-time filtering and data representation.
       </p>
       <p>
@@ -109,7 +109,7 @@
         <li>Responsive design that adapts to different screen sizes</li>
       </ul>
       <p>
-        In the full SaaS Dashboard, this component connects to real-time data streams via WebSockets, 
+        In the full SaaS dashboard, this component connects to real-time data streams via WebSockets, 
         allowing users to track their business performance metrics with up-to-the-minute accuracy. The
         visualization library supports multiple chart types (bar, line, area, pie) and can export data
         in various formats.

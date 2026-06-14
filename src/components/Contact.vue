@@ -1,50 +1,50 @@
 <template>
   <section id="contact" class="dev-section dev-contact">
     <div class="dev-container">
-      <h2 class="dev-section-title">Ready to Launch Your Next Project?</h2>
-      <p class="dev-section-subtitle">Let's collaborate to build something truly exceptional. Reach out to discuss your ideas.</p>
+      <h2 class="dev-section-title">Apply To Work With Us</h2>
+      <p class="dev-section-subtitle dev-urgency-message">
+        Taking on 3 more clients in 2026
+      </p>
       
-      <div class="dev-quote-request-container">
-        <!-- Pricing Packages -->
-        <div class="dev-pricing-packages">
-          <h3 class="dev-packages-title">Step 1: Choose a Package</h3>
-          
-          <div class="dev-packages-grid">
-            <div 
-              v-for="(pkg, index) in packages" 
-              :key="index" 
-              class="dev-package-card" 
-              :class="{ 'selected': formData.selectedPackage === pkg.id }"
-              @click="selectPackage(pkg.id)"
-            >
-              <div class="dev-package-name">{{ pkg.name }}</div>
-              <div class="dev-package-price">{{ pkg.price }}</div>
-              <div class="dev-package-description">{{ pkg.description }}</div>
-              <ul class="dev-package-features">
-                <li v-for="(feature, i) in pkg.features" :key="i">{{ feature }}</li>
-              </ul>
-              <div class="dev-package-select">
-                <div class="dev-package-radio" :class="{ 'checked': formData.selectedPackage === pkg.id }"></div>
-                <span>{{ formData.selectedPackage === pkg.id ? 'Selected' : 'Select' }}</span>
-              </div>
-            </div>
-          </div>
+      <div class="dev-apply-container">
+        <!-- Show Button Initially -->
+        <div v-if="!showForm" class="dev-apply-button-container">
+          <button @click="showForm = true" class="dev-btn dev-btn-primary dev-apply-btn">
+            Apply Now
+          </button>
         </div>
         
         <!-- Contact Form -->
-        <div class="dev-contact-form">
-          <h3 class="dev-form-title">Step 2: Tell Us About Your Project</h3>
-          <form id="contact-form" action="https://formspree.io/f/xyzwawvl" method="POST" @submit.prevent="handleSubmit">
-            <div class="dev-selected-package-summary" v-if="selectedPackageInfo">
-              <h4>Selected Package: {{ selectedPackageInfo.name }}</h4>
-              <p class="dev-selected-package-price">{{ selectedPackageInfo.price }}</p>
+        <transition name="form-fade">
+          <div v-if="showForm" class="dev-contact-form">
+            <!-- Loading State -->
+            <div v-if="isSubmitting" class="dev-form-status dev-form-loading">
+              <div class="dev-spinner"></div>
+              <p>Sending your application...</p>
             </div>
             
+            <!-- Success State -->
+            <div v-else-if="submitStatus === 'success'" class="dev-form-status dev-form-success">
+              <h3>Application Sent Successfully!</h3>
+              <p>Thank you for your application. We will review your submission and get back to you soon.</p>
+            </div>
+            
+            <!-- Error State -->
+            <div v-else-if="submitStatus === 'error'" class="dev-form-status dev-form-error">
+              <h3>Submission Failed</h3>
+              <p>{{ errorMessage || 'There was a problem submitting your form. Please try again.' }}</p>
+              <button @click="resetForm" class="dev-btn dev-btn-primary">Try Again</button>
+            </div>
+            
+            <!-- Form -->
+            <form v-else id="contact-form" action="https://api.web3forms.com/submit" method="POST" @submit.prevent="handleSubmit">
+              <input type="hidden" name="access_key" value="b4e46767-36a0-4855-94f9-7b006ace25ed">
             <div class="dev-form-group">
               <label for="name">Name</label>
               <input 
                 type="text" 
                 id="name" 
+                name="name"
                 v-model="formData.name" 
                 class="dev-form-control" 
                 placeholder="Your name"
@@ -57,6 +57,7 @@
               <input 
                 type="email" 
                 id="email" 
+                name="email"
                 v-model="formData.email" 
                 class="dev-form-control" 
                 placeholder="your.email@example.com"
@@ -69,6 +70,7 @@
               <input 
                 type="tel" 
                 id="phone" 
+                name="phone"
                 v-model="formData.phone" 
                 class="dev-form-control" 
                 placeholder="(123) 456-7890"
@@ -79,6 +81,7 @@
               <label for="project-type">Project Type</label>
               <select 
                 id="project-type" 
+                name="project_type"
                 v-model="formData.projectType" 
                 class="dev-form-control"
               >
@@ -97,6 +100,7 @@
               <label for="timeline">Expected Timeline</label>
               <select 
                 id="timeline" 
+                name="timeline"
                 v-model="formData.timeline" 
                 class="dev-form-control"
               >
@@ -113,6 +117,7 @@
               <label for="message">Project Details</label>
               <textarea 
                 id="message" 
+                name="message"
                 v-model="formData.message" 
                 class="dev-form-control" 
                 placeholder="Tell me about your project requirements and goals..."
@@ -133,26 +138,33 @@
               </label>
             </div>
             
-            <!-- Add hidden fields for the selected package -->
-            <input type="hidden" name="selectedPackage" :value="selectedPackageInfo ? selectedPackageInfo.name : 'No package selected'">
-            <input type="hidden" name="packagePrice" :value="selectedPackageInfo ? selectedPackageInfo.price : 'N/A'">
+            <!-- Hidden fields for tracking -->
+            <input type="hidden" name="subject" value="New Application - Work With Us">
+            <input type="hidden" name="from_name" value="Portfolio Contact Form">
             
-            <button type="submit" class="dev-btn dev-btn-primary" style="width: 100%;">
-              Request Quote
+            <button type="submit" class="dev-btn dev-btn-primary dev-apply-btn" style="width: 100%;" :disabled="isSubmitting">
+              <span v-if="isSubmitting">Sending...</span>
+              <span v-else>Apply Now</span>
             </button>
           </form>
         </div>
+        </transition>
       </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 
 export default defineComponent({
   name: 'Contact',
   setup() {
+    const showForm = ref(false);
+    const isSubmitting = ref(false);
+    const submitStatus = ref<'idle' | 'success' | 'error'>('idle');
+    const errorMessage = ref('');
+    
     const formData = reactive({
       name: '',
       email: '',
@@ -160,141 +172,8 @@ export default defineComponent({
       projectType: '',
       timeline: '',
       message: '',
-      selectedPackage: 'custom',
       privacyAgree: false
     });
-
-    const packages = [
-      {
-        id: 'basic',
-        name: 'Basic Website',
-        price: '$1,499',
-        description: 'Perfect for small businesses looking to establish an online presence.',
-        features: [
-          '5 Pages Website',
-          'Mobile Responsive Design',
-          'Contact Form',
-          'Basic SEO Setup',
-          '1 Week Delivery'
-        ]
-      },
-      {
-        id: 'business',
-        name: 'Business Growth',
-        price: '$2,999',
-        description: 'For established businesses needing more advanced features.',
-        features: [
-          'Up to 10 Pages',
-          'Content Management System',
-          'Blog Integration',
-          'Advanced SEO Package',
-          'Social Media Integration',
-          '2 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'ecommerce',
-        name: 'E-Commerce',
-        price: 'Starting at $4,999',
-        description: 'Full-featured online store with payment processing.',
-        features: [
-          'Full E-Commerce Store',
-          'Product Management System',
-          'Payment Gateway Integration',
-          'Order Management',
-          'Customer Accounts',
-          'Advanced Analytics',
-          '3-4 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'web-app-basic',
-        name: 'Web App - Basic',
-        price: 'Starting at $7,999',
-        description: 'Entry-level web application for specific business needs.',
-        features: [
-          'Custom User Interface',
-          'Basic User Authentication',
-          'Core Feature Development',
-          'Database Integration',
-          'Responsive Design',
-          '4-6 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'web-app-advanced',
-        name: 'Web App - Advanced',
-        price: 'Starting at $15,999',
-        description: 'Sophisticated web application with complex functionality.',
-        features: [
-          'Advanced User Management',
-          'Complex Workflows',
-          'Third-party Integrations',
-          'Payment Systems',
-          'Reporting Dashboard',
-          'API Development',
-          '8-12 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'mobile-app-basic',
-        name: 'Mobile App - Basic',
-        price: 'Starting at $12,999',
-        description: 'Native or hybrid mobile application for iOS and/or Android.',
-        features: [
-          'User-friendly Interface',
-          'Core Functionality',
-          'User Authentication',
-          'Push Notifications',
-          'Basic API Integration',
-          '6-8 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'mobile-app-advanced',
-        name: 'Mobile App - Advanced',
-        price: 'Starting at $24,999',
-        description: 'Feature-rich mobile application with complex functionality.',
-        features: [
-          'Advanced UI/UX Design',
-          'Complex Data Management',
-          'Third-party Integrations',
-          'Offline Functionality',
-          'Payment Processing',
-          'Analytics Integration',
-          '12-16 Weeks Delivery'
-        ]
-      },
-      {
-        id: 'enterprise',
-        name: 'Enterprise Solution',
-        price: 'Starting at $35,000',
-        description: 'Complete custom enterprise-grade solutions for large organizations.',
-        features: [
-          'Fully Custom Development',
-          'Scalable Architecture',
-          'Multiple Integrations',
-          'Advanced Security Features',
-          'Performance Optimization',
-          'Comprehensive Documentation',
-          'Training & Extended Support',
-          '16+ Weeks Delivery'
-        ]
-      },
-      {
-        id: 'custom',
-        name: 'Custom Quote',
-        price: 'Custom',
-        description: 'Have unique requirements? Get a tailored solution for your specific needs.',
-        features: [
-          'Custom Features',
-          'Tailored to Your Needs',
-          'Advanced Integrations',
-          'Custom Timeline',
-          'Priority Support'
-        ]
-      }
-    ];
 
     const projectOptions = [
       { value: 'website', label: 'Website' },
@@ -304,124 +183,303 @@ export default defineComponent({
       { value: 'other', label: 'Other' }
     ];
 
-    const selectedPackageInfo = computed(() => {
-      return packages.find(pkg => pkg.id === formData.selectedPackage);
-    });
-
-    const selectPackage = (packageId: string) => {
-      formData.selectedPackage = packageId;
-      
-      // Set project type based on selected package
-      if (packageId.includes('web-app')) {
-        formData.projectType = 'web-app';
-      } else if (packageId.includes('mobile-app')) {
-        formData.projectType = 'mobile-app';
-      } else if (packageId === 'ecommerce') {
-        formData.projectType = 'e-commerce';
-      } else if (packageId === 'basic' || packageId === 'business') {
-        formData.projectType = 'website';
-      }
-    };
 
     const handleSubmit = async (e: Event) => {
+      isSubmitting.value = true;
+      submitStatus.value = 'idle';
+      errorMessage.value = '';
+      
       try {
         // Get form data
         const form = e.target as HTMLFormElement;
         const formDataObject = new FormData(form);
         
-        // Submit to Formspree
-        const response = await fetch(form.action, {
-          method: form.method,
-          body: formDataObject,
-          headers: {
-            Accept: 'application/json'
-          }
+        // Note: access_key, subject, and from_name are already in the form as hidden fields
+        
+        // Submit to Web3Forms
+        const response = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          body: formDataObject
         });
         
-        if (response.ok) {
-          // Success message
-          alert('Thank you for your message! You selected the ' + 
-                (selectedPackageInfo.value ? selectedPackageInfo.value.name : 'Custom') + 
-                ' package. We will get back to you soon.');
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+          submitStatus.value = 'success';
           
-          // Reset form
-          form.reset();
-          
-          // Reset reactive data
+          // Reset form data
           formData.name = '';
           formData.email = '';
           formData.phone = '';
           formData.projectType = '';
           formData.timeline = '';
           formData.message = '';
-          formData.selectedPackage = 'custom';
           formData.privacyAgree = false;
         } else {
           // Error handling
-          const data = await response.json();
-          throw new Error(data.error || 'Form submission failed');
+          errorMessage.value = data.message || 'Form submission failed. Please try again.';
+          submitStatus.value = 'error';
         }
       } catch (error) {
-        alert('Oops! There was a problem submitting your form. Please try again or contact us directly.');
-        console.error(error);
+        errorMessage.value = 'Network error. Please check your connection and try again.';
+        submitStatus.value = 'error';
+        console.error('Form submission error:', error);
+      } finally {
+        isSubmitting.value = false;
+      }
+    };
+    
+    const resetForm = () => {
+      submitStatus.value = 'idle';
+      errorMessage.value = '';
+      const form = document.getElementById('contact-form') as HTMLFormElement;
+      if (form) {
+        form.reset();
       }
     };
 
     return {
+      showForm,
+      isSubmitting,
+      submitStatus,
+      errorMessage,
       formData,
       projectOptions,
-      packages,
-      selectedPackageInfo,
-      selectPackage,
-      handleSubmit
+      handleSubmit,
+      resetForm
     };
   }
 });
 </script>
 
 <style scoped>
-/* Additional custom styles */
-.dev-quote-request-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-lg);
-  align-items: start;
+/* Apply Now Page Styles */
+.dev-apply-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.dev-apply-button-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.dev-apply-btn {
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  border-radius: var(--border-radius-pill, 9999px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.dev-apply-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.dev-apply-btn:hover::before {
+  left: 100%;
+}
+
+.dev-apply-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(110, 68, 255, 0.4);
+}
+
+.dev-apply-btn:active {
+  transform: translateY(0);
+}
+
+/* Form transition animations */
+.form-fade-enter-active,
+.form-fade-leave-active {
+  transition: all 0.4s ease;
+}
+
+.form-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.form-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.form-fade-enter-to,
+.form-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dev-urgency-message {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-light);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .dev-contact-form {
   backdrop-filter: blur(10px);
-  padding: var(--spacing-md);
+  padding: var(--spacing-lg);
   background: var(--bg-card);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(110, 68, 255, 0.2);
+  min-height: 400px;
 }
 
-.dev-form-title {
+/* Form Status Styles */
+.dev-form-status {
   text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.3rem;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+
+.dev-form-status h3 {
+  margin: 1rem 0 0.5rem 0;
   color: var(--text-white);
+  font-size: 1.5rem;
 }
 
-.dev-selected-package-summary {
-  background: rgba(110, 68, 255, 0.1);
-  padding: var(--spacing-sm);
-  border-radius: var(--border-radius);
-  margin-bottom: var(--spacing-md);
-  border-left: 3px solid var(--primary-color);
+.dev-form-status p {
+  color: var(--text-light);
+  margin: 0.5rem 0;
+  line-height: 1.6;
 }
 
-.dev-selected-package-summary h4 {
-  margin: 0;
-  color: var(--text-white);
-  font-size: 1rem;
+.dev-form-info {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  font-style: italic;
 }
 
-.dev-selected-package-price {
-  margin: 0.3rem 0 0 0;
+/* Loading State */
+.dev-form-loading {
   color: var(--primary-color);
-  font-weight: 600;
 }
+
+.dev-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(110, 68, 255, 0.2);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success State */
+.dev-form-success {
+  color: #10b981;
+}
+
+.dev-success-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #10b981;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.dev-form-success h3 {
+  color: #10b981;
+}
+
+.dev-form-success button {
+  margin-top: 1.5rem;
+}
+
+/* Error State */
+.dev-form-error {
+  color: #ef4444;
+}
+
+.dev-error-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.dev-form-error h3 {
+  color: #ef4444;
+}
+
+.dev-form-error button {
+  margin-top: 1.5rem;
+}
+
+.dev-btn-secondary {
+  background: rgba(110, 68, 255, 0.1);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius-pill, 9999px);
+}
+
+.dev-btn-secondary:hover {
+  background: rgba(110, 68, 255, 0.2);
+}
+
+.dev-apply-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 
 .dev-privacy-terms {
   display: flex;
@@ -438,17 +496,68 @@ export default defineComponent({
   color: var(--text-muted);
 }
 
-@media (max-width: 992px) {
-  .dev-quote-request-container {
-    grid-template-columns: 1fr;
-  }
-  
-  .dev-pricing-packages {
-    order: 1;
+@media (max-width: 768px) {
+  .dev-urgency-message {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
   }
   
   .dev-contact-form {
-    order: 2;
+    padding: var(--spacing-sm);
+  }
+  
+  .dev-form-group {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .dev-form-group label {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .dev-form-control {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.875rem 1rem;
+    min-height: 44px;
+  }
+  
+  textarea.dev-form-control {
+    min-height: 120px;
+    font-size: 16px;
+  }
+  
+  .dev-apply-btn {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .dev-apply-button-container {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .dev-urgency-message {
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .dev-contact-form {
+    padding: var(--spacing-xs);
+  }
+  
+  .dev-form-group {
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .dev-form-control {
+    padding: 0.75rem 0.875rem;
+  }
+  
+  textarea.dev-form-control {
+    min-height: 100px;
   }
 }
 </style> 

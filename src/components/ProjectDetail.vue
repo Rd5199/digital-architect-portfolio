@@ -1,10 +1,6 @@
 <template>
   <div class="project-detail">
     <div class="dev-container">
-      <router-link to="/#portfolio" class="back-link">
-        <i class="fas fa-arrow-left"></i> Back to projects
-      </router-link>
-      
       <div v-if="project" class="project-content">
         <h1 class="project-title">{{ project.title }}</h1>
         <span class="project-type">{{ project.type }}</span>
@@ -13,11 +9,8 @@
           <span v-for="tag in project.tags" :key="tag" class="dev-tag">{{ tag }}</span>
         </div>
         
-        <div class="project-image-main">
-          <img v-if="!project.animation3d" :src="project.image" :alt="project.title">
-          <div v-else class="animation-wrapper">
-            <component :is="getAnimationComponent(project.id)" />
-          </div>
+        <div class="project-demo-main">
+          <component :is="getDemoComponent(project.id)" v-if="getDemoComponent(project.id)" />
         </div>
         
         <div class="project-info">
@@ -44,13 +37,6 @@
                 <li v-for="tech in project.technologies" :key="tech">{{ tech }}</li>
               </ul>
             </div>
-            
-            <div class="project-detail-item" v-if="project.liveUrl">
-              <h3>Live Project</h3>
-              <router-link :to="getFirstMiniProjectRoute()" class="dev-btn dev-btn-primary">
-                View Demo
-              </router-link>
-            </div>
           </div>
         </div>
       </div>
@@ -68,20 +54,22 @@
 import { defineComponent, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { projectsData } from '../data/projects';
-import EcommerceAnimation from './animations/EcommerceAnimation.vue';
-import WellnessAnimation from './animations/WellnessAnimation.vue';
-import SaasAnimation from './animations/SaasAnimation.vue';
-import SavourSocietiesAnimation from './animations/SavourSocietiesAnimation.vue';
-import NonLeagueAnimation from './animations/NonLeagueAnimation.vue';
+import EcommercePlatform from './mini-projects/EcommercePlatform.vue';
+import WellnessSuite from './mini-projects/WellnessSuite.vue';
+import SaasDashboard from './mini-projects/SaasDashboard.vue';
+import SavourSocieties from './mini-projects/SavourSocieties.vue';
+import NonLeagueNetwork from './mini-projects/NonLeagueNetwork.vue';
+import TheraMate from './mini-projects/TheraMate.vue';
 
 export default defineComponent({
   name: 'ProjectDetail',
   components: {
-    EcommerceAnimation,
-    WellnessAnimation,
-    SaasAnimation,
-    SavourSocietiesAnimation,
-    NonLeagueAnimation
+    EcommercePlatform,
+    WellnessSuite,
+    SaasDashboard,
+    SavourSocieties,
+    NonLeagueNetwork,
+    TheraMate
   },
   setup() {
     const route = useRoute();
@@ -91,34 +79,28 @@ export default defineComponent({
       return projectsData.find(p => p.id === projectId.value);
     });
     
-    const getAnimationComponent = (id: number) => {
+    const getDemoComponent = (id: number) => {
       switch (id) {
         case 1:
-          return 'EcommerceAnimation';
+          return 'EcommercePlatform';
         case 2:
-          return 'WellnessAnimation';
+          return 'WellnessSuite';
         case 3:
-          return 'SaasAnimation';
+          return 'SaasDashboard';
         case 4:
-          return 'SavourSocietiesAnimation';
+          return 'SavourSocieties';
         case 5:
-          return 'NonLeagueAnimation';
+          return 'NonLeagueNetwork';
+        case 6:
+          return 'TheraMate';
         default:
           return null;
       }
     };
     
-    const getFirstMiniProjectRoute = () => {
-      if (project.value && project.value.miniProjects && project.value.miniProjects.length > 0) {
-        return project.value.miniProjects[0].route;
-      }
-      return '/';
-    };
-    
     return {
       project,
-      getAnimationComponent,
-      getFirstMiniProjectRoute
+      getDemoComponent
     };
   }
 });
@@ -129,23 +111,6 @@ export default defineComponent({
   padding: 80px 0;
   background-color: var(--bg-color);
   min-height: 100vh;
-}
-
-.back-link {
-  display: inline-flex;
-  align-items: center;
-  color: var(--text-color);
-  margin-bottom: 30px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.back-link:hover {
-  color: var(--primary-color);
-}
-
-.back-link i {
-  margin-right: 8px;
 }
 
 .project-title {
@@ -171,18 +136,15 @@ export default defineComponent({
   margin-bottom: 30px;
 }
 
-.project-image-main {
+.project-demo-main {
   width: 100%;
-  height: 500px;
-  overflow: hidden;
+  min-height: 500px;
   border-radius: 10px;
-  margin-bottom: 40px;
-}
-
-.project-image-main img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  margin: 60px 0;
+  padding: 40px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease-in-out;
 }
 
 .project-info {
@@ -251,19 +213,94 @@ export default defineComponent({
 }
 
 @media (max-width: 768px) {
-  .project-info {
-    grid-template-columns: 1fr;
+  .project-detail {
+    padding-top: var(--spacing-md);
   }
   
-  .project-image-main {
-    height: 300px;
+  .project-title {
+    font-size: 1.75rem;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  
+  .project-type {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .project-tags {
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .dev-tag {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.75rem;
+  }
+  
+  .project-demo-main {
+    min-height: 400px;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .project-info {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .project-description h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+  
+  .project-description p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .project-details {
+    gap: var(--spacing-sm);
+  }
+  
+  .project-detail-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .project-detail-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .project-detail-item p,
+  .project-detail-item li {
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 }
 
-.animation-wrapper {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-  overflow: hidden;
+@media (max-width: 576px) {
+  .project-title {
+    font-size: 1.5rem;
+  }
+  
+  .project-demo-main {
+    min-height: 350px;
+    padding: var(--spacing-xs);
+  }
+  
+  .project-description h2 {
+    font-size: 1.3rem;
+  }
+  
+  .project-description p {
+    font-size: 0.9rem;
+  }
+  
+  .project-detail-item h3 {
+    font-size: 1rem;
+  }
 }
 </style> 

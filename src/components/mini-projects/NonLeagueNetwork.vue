@@ -1,7 +1,7 @@
 <template>
   <div class="non-league-network-demo">
-    <h2 class="demo-title">Non-League Network Mobile App</h2>
-    <p class="demo-description">A community platform for non-league football players, staff and fans</p>
+    <h2 class="demo-title">Sports Community App</h2>
+    <p class="demo-description">A community platform for football players, staff and fans</p>
     
     <div class="device-container">
       <div class="device-frame">
@@ -90,9 +90,10 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 20px 60px;
+  padding: 40px 32px 60px;
   max-width: 100%;
   margin: 0 auto;
+  transition: all 0.3s ease-in-out;
 }
 
 .demo-title {
@@ -111,7 +112,7 @@ export default defineComponent({
 }
 
 .device-container {
-  margin: 20px 0 40px;
+  margin: 32px 0 50px;
   display: flex;
   justify-content: center;
 }

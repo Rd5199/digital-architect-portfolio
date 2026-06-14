@@ -32,8 +32,8 @@ export interface Project {
 export const projectsData: Project[] = [
   {
     id: 1,
-    title: 'E-commerce Platform X',
-    type: 'Web Application',
+    title: 'E-Commerce Site',
+    type: 'Web App',
     image: '/assets/images/openart-image_lC1XlWa1_1741449161168_raw.jpg',
     animation3d: '/assets/animations/ecommerce-animation.svg',
     tags: ['Vue.js', 'Node.js', 'Stripe'],
@@ -46,7 +46,7 @@ export const projectsData: Project[] = [
     miniProjects: [
       {
         id: 101,
-        title: 'E-commerce Platform Demo',
+        title: 'E-Commerce Demo',
         description: 'A functional e-commerce platform demonstration with product management, inventory tracking, customer accounts, and payment processing features.',
         route: '/mini-projects/ecommerce-platform',
         image: '/assets/images/openart-image_lC1XlWa1_1741449161168_raw.jpg'
@@ -55,8 +55,8 @@ export const projectsData: Project[] = [
   },
   {
     id: 2,
-    title: 'Wellness Mobile App',
-    type: 'Mobile App (iOS & Android)',
+    title: 'Wellness App',
+    type: 'Mobile App',
     image: '/assets/images/openart-image_4J3rsNPv_1741447658208_raw.jpg',
     animation3d: '/assets/animations/wellness-animation.svg',
     tags: ['React Native', 'Firebase', 'API Integration'],
@@ -69,7 +69,7 @@ export const projectsData: Project[] = [
     miniProjects: [
       {
         id: 201,
-        title: 'Comprehensive Wellness Suite',
+        title: 'Wellness App Demo',
         description: 'A full-featured wellness platform combining meditation timer, activity tracking, journaling capabilities, and offline data synchronization in one seamless experience.',
         route: '/mini-projects/wellness-suite',
         image: '/assets/images/openart-image_4J3rsNPv_1741447658208_raw.jpg'
@@ -79,7 +79,7 @@ export const projectsData: Project[] = [
   {
     id: 3,
     title: 'SaaS Dashboard',
-    type: 'Web Application',
+    type: 'Web App',
     image: '/assets/images/space-bg.svg',
     animation3d: '/assets/animations/saas-animation.svg',
     tags: ['Angular', 'Python/Django', 'AWS'],
@@ -92,7 +92,7 @@ export const projectsData: Project[] = [
     miniProjects: [
       {
         id: 304,
-        title: 'B2B SaaS Dashboard',
+        title: 'SaaS Dashboard Demo',
         description: 'A comprehensive analytics and management dashboard for B2B customers to monitor service usage, manage subscriptions, and access detailed reports.',
         route: '/mini-projects/saas-dashboard',
         image: '/assets/images/space-bg.svg'
@@ -101,8 +101,8 @@ export const projectsData: Project[] = [
   },
   {
     id: 4,
-    title: 'Savour Societies',
-    type: 'Web Application',
+    title: 'Social Dining App',
+    type: 'Web App',
     image: '/assets/images/savour-societies.png',
     animation3d: '/assets/animations/savour-societies.svg',
     tags: ['Vue.js', 'TailwindCSS', 'Firebase'],
@@ -115,8 +115,8 @@ export const projectsData: Project[] = [
     miniProjects: [
       {
         id: 401,
-        title: 'Savour Societies Landing Page',
-        description: 'An engaging landing page for the social dining platform featuring the referral system, countdown timer, and guest list registration.',
+        title: 'Social Dining Demo',
+        description: 'An interactive demo featuring referral flows, event registration, and diner and restaurant portal views.',
         route: '/mini-projects/savour-societies',
         image: '/assets/images/savour-societies.jpg'
       }
@@ -124,8 +124,8 @@ export const projectsData: Project[] = [
   },
   {
     id: 5,
-    title: 'Non-League Network',
-    type: 'Mobile App (iOS & Android)',
+    title: 'Sports Community App',
+    type: 'Mobile App',
     image: '/assets/images/non-league-network.png',
     animation3d: '/assets/animations/non-league-network.svg',
     tags: ['React Native', 'Firebase', 'Offline Support'],
@@ -138,10 +138,32 @@ export const projectsData: Project[] = [
     miniProjects: [
       {
         id: 501,
-        title: 'Non-League Network Demo',
-        description: 'An interactive demonstration of the Non-League Network mobile app, showcasing key user flows from registration to offline match management.',
+        title: 'Sports Community Demo',
+        description: 'An interactive mobile app demo covering registration, profiles, fixtures, and offline match management.',
         route: '/mini-projects/non-league-network',
         image: '/assets/images/non-league-network.jpg'
+      }
+    ]
+  },
+  {
+    id: 6,
+    title: 'Healthcare Marketplace',
+    type: 'Web App',
+    image: '/assets/images/theramate.png',
+    tags: ['Vue.js', 'Healthcare', 'Marketplace'],
+    description: 'A comprehensive healthcare marketplace platform connecting clients with qualified osteopaths, sports massage therapists, and sports therapists across the UK. Features intelligent matching, smart booking, secure communication, and progress analytics.',
+    challenge: 'The healthcare industry needed a modern platform to bridge the gap between clients seeking therapeutic services and qualified practitioners. The platform needed to handle practitioner verification, intelligent matching based on location and specialization, secure booking systems, and HIPAA-compliant communication.',
+    solution: 'I developed a full-stack marketplace platform with AI-powered practitioner matching, real-time calendar integration, secure messaging for healthcare professionals, and comprehensive analytics. The platform includes verification systems for practitioners, review and rating functionality, and seamless payment processing.',
+    duration: '4 months',
+    technologies: ['Vue.js', 'Node.js', 'PostgreSQL', 'Stripe API', 'Calendar Integration', 'Real-time Messaging', 'Analytics'],
+    liveUrl: 'https://theramate.co.uk',
+    miniProjects: [
+      {
+        id: 601,
+        title: 'Healthcare Marketplace Demo',
+        description: 'A healthcare marketplace platform connecting clients with qualified therapists, featuring smart booking, intelligent matching, and secure communication.',
+        route: '/mini-projects/theramate',
+        image: '/assets/images/theramate.jpg'
       }
     ]
   }

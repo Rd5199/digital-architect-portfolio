@@ -14,10 +14,37 @@ class AnimationManager {
   private static isRunning: boolean = false;
   private static isPaused: boolean = false;
   private static clock: THREE.Clock;
+  private static visibilityHandlerAttached = false;
   
   static {
     // Initialize clock
     this.clock = new THREE.Clock();
+  }
+
+  private static attachVisibilityHandler(): void {
+    if (this.visibilityHandlerAttached || typeof document === 'undefined') return;
+
+    this.visibilityHandlerAttached = true;
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.isPaused = true;
+        return;
+      }
+
+      // Reset clock after iOS/Safari tab sleep to avoid frozen animations
+      this.clock.stop();
+      this.clock.start();
+      this.isPaused = false;
+    });
+
+    window.addEventListener('pageshow', (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        this.clock.stop();
+        this.clock.start();
+        this.isPaused = false;
+      }
+    });
   }
 
   // Start the animation loop
@@ -25,6 +52,7 @@ class AnimationManager {
     if (this.isRunning) return;
     
     this.isRunning = true;
+    this.attachVisibilityHandler();
     this.clock.start();
     console.log('Animation manager started');
     

@@ -1103,7 +1103,7 @@ export default defineComponent({
 .saas-dashboard-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1329,6 +1329,8 @@ export default defineComponent({
   flex: 1;
   height: calc(100% - 60px);
   overflow: hidden;
+  gap: 32px;
+  transition: all 0.3s ease-in-out;
 }
 
 .sidebar {
@@ -1338,6 +1340,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 20px 0;
 }
 
 .main-nav {
@@ -1357,10 +1360,10 @@ export default defineComponent({
 .main-nav li a {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
+  padding: 14px 24px;
   color: #6b7280;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.3s ease-in-out;
 }
 
 .main-nav li a i {
@@ -1543,16 +1546,16 @@ export default defineComponent({
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: 24px;
+  margin-bottom: 40px;
 }
 
 .metric-card {
   background: white;
   border-radius: 8px;
-  padding: 15px;
+  padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .metric-card:hover {

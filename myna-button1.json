@@ -1,0 +1,35 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button1",
+  "title": "Button1",
+  "description": "Buttons are used to trigger an action or event, such as submitting a form, opening a dialog, canceling an action, or performing a delete operation.",
+  "type": "registry:component",
+  "author": "Praveen Juge <hello@praveenjuge.com>",
+  "dependencies": [],
+  "registryDependencies": [
+    "button"
+  ],
+  "files": [
+    {
+      "path": "page.tsx",
+      "content": "import Component from \"../button1\"\n\nexport default function Page() {\n  return (\n    <main className=\"w-full overflow-x-auto p-4 flex justify-center items-center gap-2 flex-wrap\">\n      <Component />\n    </main>\n  )\n}\n",
+      "type": "registry:page",
+      "target": "app/page.tsx"
+    },
+    {
+      "path": "button1.tsx",
+      "content": "import { Button } from \"@/ui/button\";\n\nexport default function Basic() {\n  return (\n    <>\n      <Button>Button</Button>\n      <Button variant=\"secondary\">Secondary</Button>\n      <Button variant=\"destructive\">Destructive</Button>\n      <Button variant=\"outline\">Outline</Button>\n      <Button variant=\"ghost\">Ghost</Button>\n      <Button variant=\"link\">Link</Button>\n    </>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "categories": [
+    "elements"
+  ],
+  "docs": "https://mynaui.com/components/button",
+  "meta": {
+    "category": "elements",
+    "previewUrl": "https://mynaui.com/preview/button/button1",
+    "registryUrl": "https://mynaui.com/r/button1.json",
+    "installCommand": "npx shadcn@latest add @mynaui/button1"
+  }
+}

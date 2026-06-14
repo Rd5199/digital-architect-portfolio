@@ -1,11 +1,27 @@
 <template>
-  <div id="space-background" ref="backgroundContainer" style="pointer-events: none;"></div>
+  <div
+    id="space-background"
+    ref="backgroundContainer"
+    class="viewport-fixed-layer"
+    :class="{ 'webgl-fallback': useCssFallback }"
+    style="pointer-events: none;"
+  ></div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
 import * as THREE from 'three';
 import AnimationManager from '../utils/AnimationManager';
+import {
+  getAdaptivePixelRatio,
+  getParticleBudget,
+  getQualityTier,
+  getViewportSize,
+  isTouchDevice,
+  supportsWebGL,
+  type ParticleBudget,
+  type QualityTier,
+} from '../utils/deviceCapabilities';
 
 export default defineComponent({
   name: 'SpaceBackground3D',
@@ -17,6 +33,7 @@ export default defineComponent({
   },
   setup(props) {
     const backgroundContainer = ref<HTMLElement | null>(null);
+    const useCssFallback = ref(false);
     let scene: THREE.Scene;
     let camera: THREE.PerspectiveCamera;
     let renderer: THREE.WebGLRenderer;
@@ -24,10 +41,10 @@ export default defineComponent({
     let backgroundParticles: THREE.Points;
     let deepSpaceParticles: THREE.Points;
     let largeParticles: THREE.Points;
-    let interactiveParticles: THREE.Points; // New interactive particles that respond to cursor
+    let interactiveParticles: THREE.Points;
     let galaxyClusters: THREE.Group;
     let connectionLines: THREE.LineSegments | null = null;
-    let interactiveConnectionLines: THREE.LineSegments | null = null; // Connections between interactive particles
+    let interactiveConnectionLines: THREE.LineSegments | null = null;
     let mouseX = 0;
     let mouseY = 0;
     let windowHalfX = window.innerWidth / 2;
@@ -35,20 +52,108 @@ export default defineComponent({
     let scrollPosition = 0;
     let positions: Float32Array;
     let originalPositions: Float32Array;
-    let interactivePositions: Float32Array; // Positions for interactive particles
-    let interactiveOriginalPositions: Float32Array; // Original positions for interactive particles
+    let interactivePositions: Float32Array;
+    let interactiveOriginalPositions: Float32Array;
     let particleCount = 2500;
     let backgroundParticleCount = 8000;
     let deepSpaceParticleCount = 12000;
     let largeParticleCount = 100;
-    let interactiveParticleCount = 1500; // Count for interactive particles
+    let interactiveParticleCount = 1500;
+    let galaxyClusterCount = 7;
+    let connectionCheckRange = 100;
+    let interactiveConnectionRange = 20;
+    let updateConnectionsEvery = 1;
+    let animationFrameCounter = 0;
+    let qualityTier: QualityTier = 'high';
+    let particleBudget: ParticleBudget;
     let raycaster: THREE.Raycaster;
     let mousePosition = new THREE.Vector2();
-    let interactionRadius = 150; // Radius of interaction for mouse repulsion
-    let repelStrength = 25; // Strength of repulsion effect
+    let interactionRadius = 150;
+    let repelStrength = 25;
+    let viewportWidth = window.innerWidth;
+    let viewportHeight = window.innerHeight;
+    let isContextLost = false;
+
+    const applyParticleBudget = (budget: ParticleBudget) => {
+      particleCount = budget.foreground;
+      backgroundParticleCount = budget.background;
+      deepSpaceParticleCount = budget.deepSpace;
+      largeParticleCount = budget.large;
+      interactiveParticleCount = budget.interactive;
+      galaxyClusterCount = budget.galaxyClusters;
+      connectionCheckRange = budget.connectionCheckRange;
+      interactiveConnectionRange = budget.interactiveConnectionRange;
+      updateConnectionsEvery = budget.updateConnectionsEvery;
+    };
+
+    const styleRendererCanvas = () => {
+      if (!renderer) return;
+
+      const canvas = renderer.domElement;
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.maxWidth = 'none';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.touchAction = 'none';
+    };
+
+    const updatePointerFromClient = (clientX: number, clientY: number) => {
+      mouseX = (clientX - windowHalfX) * 2;
+      mouseY = (clientY - windowHalfY) * 2;
+      mousePosition.x = (clientX / viewportWidth) * 2 - 1;
+      mousePosition.y = -(clientY / viewportHeight) * 2 + 1;
+
+      if (camera) {
+        const targetX = (clientX / viewportWidth - 0.5) * 10;
+        const targetY = (clientY / viewportHeight - 0.5) * -10;
+        camera.position.x += (targetX - camera.position.x) * 0.01;
+        camera.position.y += (targetY - camera.position.y) * 0.01;
+        camera.lookAt(scene.position);
+      }
+    };
+
+    const updateShaderPixelRatios = (pixelRatio: number) => {
+      const materials = [
+        particles?.material,
+        backgroundParticles?.material,
+        deepSpaceParticles?.material,
+        largeParticles?.material,
+        interactiveParticles?.material,
+      ];
+
+      materials.forEach((material) => {
+        if (material instanceof THREE.ShaderMaterial && material.uniforms.pixelRatio) {
+          material.uniforms.pixelRatio.value = pixelRatio;
+        }
+      });
+    };
 
     const init = () => {
       if (!backgroundContainer.value) return;
+
+      if (!supportsWebGL()) {
+        useCssFallback.value = true;
+        console.warn('WebGL unavailable — using CSS fallback background');
+        return;
+      }
+
+      qualityTier = getQualityTier();
+      particleBudget = getParticleBudget(qualityTier);
+      applyParticleBudget(particleBudget);
+
+      if (qualityTier !== 'high') {
+        interactionRadius = 120;
+        repelStrength = 18;
+      }
+
+      const viewport = getViewportSize();
+      viewportWidth = viewport.width;
+      viewportHeight = viewport.height;
+      windowHalfX = viewportWidth / 2;
+      windowHalfY = viewportHeight / 2;
 
       // Create scene
       scene = new THREE.Scene();
@@ -60,14 +165,14 @@ export default defineComponent({
       // Set up camera with greater far clipping plane
       camera = new THREE.PerspectiveCamera(
         75, 
-        window.innerWidth / window.innerHeight, 
+        viewportWidth / viewportHeight, 
         1, 
         20000
       );
       camera.position.z = 1000;
       
       // Create galaxy clusters in the far background
-      createGalaxyClusters();
+      createGalaxyClusters(galaxyClusterCount);
       
       // Create ultra-deep space particles
       createDeepSpaceParticles();
@@ -96,21 +201,41 @@ export default defineComponent({
       // Add some point lights
       addColoredLights();
       
-      // Set up renderer with better quality
+      // Set up renderer with adaptive quality
+      const pixelRatio = getAdaptivePixelRatio();
       renderer = new THREE.WebGLRenderer({ 
-        antialias: true, 
+        antialias: qualityTier === 'high',
         alpha: true,
-        powerPreference: 'high-performance'
+        powerPreference: qualityTier === 'high' ? 'high-performance' : 'default',
       });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(pixelRatio);
+      renderer.setSize(viewportWidth, viewportHeight, false);
       renderer.setClearColor(props.backgroundColor, 1);
       backgroundContainer.value.appendChild(renderer.domElement);
+      styleRendererCanvas();
+
+      renderer.domElement.addEventListener('webglcontextlost', (event) => {
+        event.preventDefault();
+        isContextLost = true;
+        AnimationManager.togglePause(true);
+      });
+
+      renderer.domElement.addEventListener('webglcontextrestored', () => {
+        isContextLost = false;
+        onWindowResize();
+        AnimationManager.togglePause(false);
+      });
       
       // Set up event listeners
-      document.addEventListener('mousemove', onDocumentMouseMove);
-      window.addEventListener('scroll', onScroll);
+      document.addEventListener('mousemove', onDocumentMouseMove, { passive: true });
+      if (isTouchDevice()) {
+        document.addEventListener('touchmove', onDocumentTouchMove, { passive: true });
+        document.addEventListener('touchstart', onDocumentTouchMove, { passive: true });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
       window.addEventListener('resize', onWindowResize);
+      window.visualViewport?.addEventListener('resize', onWindowResize);
+      window.visualViewport?.addEventListener('scroll', onWindowResize);
       
       // Start animation using AnimationManager
       AnimationManager.addAnimation(animate, 0);
@@ -119,11 +244,8 @@ export default defineComponent({
     };
     
     // Create distant galaxy clusters for depth
-    const createGalaxyClusters = () => {
+    const createGalaxyClusters = (clusterCount: number) => {
       galaxyClusters = new THREE.Group();
-      
-      // Create 5-8 galaxy clusters at random far positions
-      const clusterCount = 5 + Math.floor(Math.random() * 4);
       
       for (let i = 0; i < clusterCount; i++) {
         // Create a galaxy cluster at a very distant position
@@ -303,37 +425,32 @@ export default defineComponent({
           pixelRatio: { value: window.devicePixelRatio }
         },
         vertexShader: `
+          #include <common>
+          #include <color_pars_vertex>
+
           attribute float size;
-          varying vec3 vColor;
           uniform float time;
           uniform float pixelRatio;
           
           void main() {
-            vColor = color;
+            #include <color_vertex>
             
-            // Almost no movement - just tiny twinkling
             vec3 pos = position;
-            
-            // Subtle twinkling effect
             float twinkle = sin(time * 0.1 + position.x * 0.01 + position.y * 0.01 + position.z * 0.01);
-            
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            
-            // Size varies slightly with time for twinkling
             gl_PointSize = size * (0.8 + twinkle * 0.2) * pixelRatio * (1500.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vColor;
+          #include <common>
+          #include <color_pars_fragment>
           
           void main() {
             vec2 uv = gl_PointCoord.xy - 0.5;
             float circle = 1.0 - smoothstep(0.45, 0.5, length(uv));
-            
             if (circle < 0.05) discard;
-            
-            gl_FragColor = vec4(vColor, circle * 0.6); // Very subtle particles
+            gl_FragColor = vec4(vColor, circle * 0.6);
           }
         `,
         transparent: true,
@@ -403,18 +520,18 @@ export default defineComponent({
           pixelRatio: { value: window.devicePixelRatio }
         },
         vertexShader: `
+          #include <common>
+          #include <color_pars_vertex>
+
           attribute float size;
-          varying vec3 vColor;
           uniform float time;
           uniform float pixelRatio;
           
           void main() {
-            vColor = color;
+            #include <color_vertex>
             
-            // Extremely subtle movement
             vec3 pos = position;
-            float depth = abs(position.z) / 5000.0; // Normalize depth
-            // Slower movement for distant particles
+            float depth = abs(position.z) / 5000.0;
             float moveFactor = 0.1 * (1.0 - depth);
             
             pos.x += sin(time * 0.05 + position.z * 0.0001) * 2.0 * moveFactor;
@@ -422,22 +539,19 @@ export default defineComponent({
             pos.z += sin(time * 0.05 + position.y * 0.0001) * 2.0 * moveFactor;
             
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            
-            // Size attenuation
             gl_PointSize = size * pixelRatio * (1000.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vColor;
+          #include <common>
+          #include <color_pars_fragment>
           
           void main() {
             vec2 uv = gl_PointCoord.xy - 0.5;
             float circle = 1.0 - smoothstep(0.45, 0.5, length(uv));
-            
             if (circle < 0.05) discard;
-            
-            gl_FragColor = vec4(vColor, circle * 0.8); // More subtle particles
+            gl_FragColor = vec4(vColor, circle * 0.8);
           }
         `,
         transparent: true,
@@ -502,48 +616,43 @@ export default defineComponent({
           texture: { value: glowTexture }
         },
         vertexShader: `
+          #include <common>
+          #include <color_pars_vertex>
+
           attribute float size;
-          varying vec3 vColor;
           uniform float time;
           uniform float pixelRatio;
           
           void main() {
-            vColor = color;
+            #include <color_vertex>
             
-            // More noticeable movement
             vec3 pos = position;
-            
-            // Large, slow orbital motion
             float angle = time * 0.2;
             float radius = length(position.xz);
             float originalY = position.y;
             
-            // Different movement patterns based on position
             if (length(position) > 900.0) {
-              // Outer particles move in larger orbits
               pos.x = radius * cos(angle + position.z * 0.01);
               pos.z = radius * sin(angle + position.x * 0.01);
               pos.y = originalY + sin(time * 0.3 + position.x * 0.02) * 20.0;
             } else {
-              // Inner particles have more wave-like motion
-              pos.x += sin(time * 0.3 + position.z * 0.05) * 15.0;
+              pos.x += sin(time * 0.15 + position.z * 0.05) * 15.0;
               pos.y += cos(time * 0.2 + position.x * 0.05) * 15.0;
               pos.z += sin(time * 0.4 + position.y * 0.05) * 15.0;
             }
             
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            
-            // Size attenuation with distance, but keep them relatively large
             gl_PointSize = size * pixelRatio * (300.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
+          #include <common>
+          #include <color_pars_fragment>
+
           uniform sampler2D texture;
-          varying vec3 vColor;
           
           void main() {
-            // Use texture for glow effect
             vec4 texColor = texture2D(texture, gl_PointCoord);
             gl_FragColor = vec4(vColor, 1.0) * texColor;
           }
@@ -633,37 +742,34 @@ export default defineComponent({
           pixelRatio: { value: window.devicePixelRatio }
         },
         vertexShader: `
+          #include <common>
+          #include <color_pars_vertex>
+
           attribute float size;
-          varying vec3 vColor;
           uniform float time;
           uniform float pixelRatio;
           
           void main() {
-            vColor = color;
+            #include <color_vertex>
             
-            // Add subtle movement - slowed down
             vec3 pos = position;
             pos.x += sin(time * 0.15 + position.z * 0.01) * 3.0;
             pos.y += cos(time * 0.15 + position.x * 0.01) * 3.0;
             pos.z += sin(time * 0.15 + position.y * 0.01) * 3.0;
             
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            
-            // Size attenuation
             gl_PointSize = size * pixelRatio * (300.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vColor;
+          #include <common>
+          #include <color_pars_fragment>
           
           void main() {
-            // Create a circular particle with softer edge
             vec2 uv = gl_PointCoord.xy - 0.5;
             float circle = 1.0 - smoothstep(0.4, 0.5, length(uv));
-            
             if (circle < 0.1) discard;
-            
             gl_FragColor = vec4(vColor, circle);
           }
         `,
@@ -728,37 +834,34 @@ export default defineComponent({
           pixelRatio: { value: window.devicePixelRatio }
         },
         vertexShader: `
+          #include <common>
+          #include <color_pars_vertex>
+
           attribute float size;
-          varying vec3 vColor;
           uniform float time;
           uniform float pixelRatio;
           
           void main() {
-            vColor = color;
+            #include <color_vertex>
             
-            // Add subtle movement similar to sample
             vec3 pos = position;
             pos.x += sin(time * 0.2 + position.z * 0.01) * 5.0;
             pos.y += cos(time * 0.2 + position.x * 0.01) * 5.0;
             pos.z += sin(time * 0.2 + position.y * 0.01) * 5.0;
             
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            
-            // Size attenuation
             gl_PointSize = size * pixelRatio * (300.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
         fragmentShader: `
-          varying vec3 vColor;
+          #include <common>
+          #include <color_pars_fragment>
           
           void main() {
-            // Create a circular particle
             vec2 uv = gl_PointCoord.xy - 0.5;
             float circle = 1.0 - smoothstep(0.4, 0.5, length(uv));
-            
             if (circle < 0.1) discard;
-            
             gl_FragColor = vec4(vColor, circle);
           }
         `,
@@ -824,7 +927,7 @@ export default defineComponent({
         const pz = positionAttribute.array[i3 + 2];
         
         // Check only a subset of particles for connections (performance optimization)
-        for (let j = i + 1; j < Math.min(i + 100, particleCount); j++) {
+        for (let j = i + 1; j < Math.min(i + connectionCheckRange, particleCount); j++) {
           const j3 = j * 3;
           
           // Calculate distance squared
@@ -910,7 +1013,7 @@ export default defineComponent({
         const pz = positionAttribute.array[i3 + 2];
         
         // Check only a few particles for connections (even fewer connections)
-        for (let j = i + 1; j < Math.min(i + 20, interactiveParticleCount); j++) {
+        for (let j = i + 1; j < Math.min(i + interactiveConnectionRange, interactiveParticleCount); j++) {
           const j3 = j * 3;
           
           // Calculate distance squared
@@ -974,52 +1077,46 @@ export default defineComponent({
       scene.add(distantLight);
     };
     
-    // Handle mouse movement for interaction
     const onDocumentMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX - windowHalfX) * 2;
-      mouseY = (event.clientY - windowHalfY) * 2;
-      
-      // Update normalized mouse position for raycaster
-      mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mousePosition.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      
-      // Add subtle camera movement for parallax effect
-      if (camera) {
-        // Move camera very slightly based on mouse to create parallax
-        const targetX = (event.clientX / window.innerWidth - 0.5) * 10;
-        const targetY = (event.clientY / window.innerHeight - 0.5) * -10;
-        
-        camera.position.x += (targetX - camera.position.x) * 0.01;
-        camera.position.y += (targetY - camera.position.y) * 0.01;
-        camera.lookAt(scene.position);
-      }
+      updatePointerFromClient(event.clientX, event.clientY);
+    };
+
+    const onDocumentTouchMove = (event: TouchEvent) => {
+      if (event.touches.length === 0) return;
+      const touch = event.touches[0];
+      updatePointerFromClient(touch.clientX, touch.clientY);
     };
     
     const onScroll = () => {
       scrollPosition = window.scrollY;
       
-      // Pass scroll information to the animation
       if (camera) {
-        // Subtle parallax effect - camera follows scroll position
-        const targetY = scrollPosition * 0.1;
-        camera.position.y = camera.position.y + (targetY - camera.position.y) * 0.05;
-        
-        // Adjust camera rotation based on scroll position for dynamic effect
+        const targetY = scrollPosition * 0.05;
+        camera.position.y += (targetY - camera.position.y) * 0.05;
         camera.rotation.x = scrollPosition * 0.0001;
       }
     };
     
     const onWindowResize = () => {
-      windowHalfX = window.innerWidth / 2;
-      windowHalfY = window.innerHeight / 2;
+      const viewport = getViewportSize();
+      viewportWidth = viewport.width;
+      viewportHeight = viewport.height;
+      windowHalfX = viewportWidth / 2;
+      windowHalfY = viewportHeight / 2;
       
-      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.aspect = viewportWidth / viewportHeight;
       camera.updateProjectionMatrix();
       
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      const pixelRatio = getAdaptivePixelRatio();
+      renderer.setPixelRatio(pixelRatio);
+      renderer.setSize(viewportWidth, viewportHeight, false);
+      updateShaderPixelRatios(pixelRatio);
     };
     
     const animate = () => {
+      if (isContextLost || !renderer) return;
+
+      animationFrameCounter += 1;
       // Update shader time uniforms for all particle systems
       const time = performance.now() * 0.001;
       
@@ -1083,6 +1180,14 @@ export default defineComponent({
         positionAttribute.needsUpdate = true;
       }
       
+      // Gentle ambient motion on touch devices so the background stays alive without a cursor
+      if (isTouchDevice()) {
+        mouseX += Math.sin(time * 0.4) * 80;
+        mouseY += Math.cos(time * 0.35) * 60;
+        mousePosition.x += Math.sin(time * 0.4) * 0.15;
+        mousePosition.y += Math.cos(time * 0.35) * 0.12;
+      }
+      
       // Handle interactive particles repulsion from mouse cursor
       if (interactiveParticles.geometry.getAttribute('position')) {
         // Update raycaster using mouse position
@@ -1091,7 +1196,7 @@ export default defineComponent({
         const positionAttribute = interactiveParticles.geometry.getAttribute('position');
         
         // Get mouse position in world space
-        const mouseRay = raycaster.ray;
+        const mouseRay = raycaster.ray.clone();
         const mouseWorldPos = new THREE.Vector3();
         
         // Project mouse position to z=200 plane (where interactive particles are)
@@ -1141,9 +1246,11 @@ export default defineComponent({
         positionAttribute.needsUpdate = true;
       }
       
-      // Update connection lines
-      updateConnections();
-      updateInteractiveConnections();
+      // Update connection lines (throttled on mobile for smoother animation)
+      if (animationFrameCounter % updateConnectionsEvery === 0) {
+        updateConnections();
+        updateInteractiveConnections();
+      }
       
       // Rotate particles based on mouse position
       if (particles) {
@@ -1186,8 +1293,12 @@ export default defineComponent({
     onBeforeUnmount(() => {
       // Remove event listeners
       document.removeEventListener('mousemove', onDocumentMouseMove);
+      document.removeEventListener('touchmove', onDocumentTouchMove);
+      document.removeEventListener('touchstart', onDocumentTouchMove);
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onWindowResize);
+      window.visualViewport?.removeEventListener('resize', onWindowResize);
+      window.visualViewport?.removeEventListener('scroll', onWindowResize);
       
       // Remove animation from AnimationManager
       AnimationManager.removeAnimation(animate);
@@ -1294,7 +1405,8 @@ export default defineComponent({
     });
     
     return {
-      backgroundContainer
+      backgroundContainer,
+      useCssFallback,
     };
   }
 });
@@ -1302,13 +1414,15 @@ export default defineComponent({
 
 <style scoped>
 #space-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -10;
   pointer-events: none;
-  overflow: hidden;
+  z-index: 0;
+}
+
+#space-background.webgl-fallback {
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(110, 68, 255, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(0, 255, 204, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(52, 152, 219, 0.08) 0%, transparent 60%),
+    #010108;
 }
 </style> 
