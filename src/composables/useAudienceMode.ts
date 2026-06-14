@@ -4,7 +4,10 @@ import { useRoute, useRouter } from 'vue-router';
 export type AudienceMode = 'business' | 'creator';
 
 const CREATOR_PATH = '/creators';
-const BUSINESS_PATH = '/';
+
+function isBusinessLandingPath(path: string) {
+  return path === '/' || path === '/business-landing/business.html' || path.startsWith('/business-landing/');
+}
 
 export function useAudienceMode() {
   const route = useRoute();
@@ -27,8 +30,8 @@ export function useAudienceMode() {
       return;
     }
 
-    if (mode === 'business' && route.path !== BUSINESS_PATH) {
-      router.push({ name: 'home' });
+    if (mode === 'business' && !isBusinessLandingPath(route.path)) {
+      window.location.href = '/';
     }
   };
 

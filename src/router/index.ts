@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { scrollToTarget, getLenis } from '../utils/smoothExperience'
 import { updatePageMeta, SITE_URL } from '../utils/seo'
-import BusinessLandingPage from '../views/BusinessLandingPage.vue'
 import CreatorsPage2 from '../views/CreatorsPage2.vue'
 import ModelsShowcase from '../components/ModelsShowcase.vue'
 import ProjectDetail from '../components/ProjectDetail.vue'
@@ -22,14 +21,20 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: BusinessLandingPage,
+      beforeEnter: () => {
+        window.location.replace('/business-landing/business.html');
+        return false;
+      },
       meta: {
         audience: 'business',
-        immersiveLanding: true,
         title: 'My Digital Architect | Custom AI for Service Businesses',
         description:
           'Custom AI systems for service businesses. We cut costs and move faster with web and mobile apps built around how you work.',
       },
+    },
+    {
+      path: '/business-landing/business.html',
+      redirect: '/',
     },
     {
       path: '/business-landing',

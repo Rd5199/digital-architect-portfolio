@@ -130,12 +130,12 @@ function buildNav() {
         <div class="menu-content-group">
           <p>Explore</p>
           ${isBusinessMenu
-            ? `<a href="#about">About</a>
+            ? `          <a href="#about">About</a>
           <a href="#faq">FAQs</a>
-          <a href="/careers" target="_parent">Careers</a>
-          <a href="/3d-models" target="_parent">3D Models</a>`
+          <a href="/careers">Careers</a>
+          <a href="/3d-models">3D Models</a>`
             : `<a href="mailto:info@mydigitalarchitect.com">Email</a>
-          <a href="/#ai-audit" target="_parent">Free AI audit</a>`}
+          <a href="#audit">Free AI audit</a>`}
         </div>
         <div class="menu-content-group">
           <p>Language</p>

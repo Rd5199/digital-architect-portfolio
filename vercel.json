@@ -1,46 +1,16 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    },
-    {
-      "src": "api/**/*.ts",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/business-landing/(.*)",
-      "dest": "/business-landing/$1"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/models/(.*)",
-      "dest": "/models/$1"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
-    },
-    {
-      "src": "/sitemap.xml",
-      "dest": "/sitemap.xml"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/", "destination": "/business-landing/business.html" },
+    { "source": "/creators", "destination": "/index.html" },
+    { "source": "/creators-2", "destination": "/creators" },
+    { "source": "/3d-models", "destination": "/index.html" },
+    { "source": "/careers", "destination": "/index.html" },
+    { "source": "/project/:path*", "destination": "/index.html" },
+    { "source": "/mini-projects/:path*", "destination": "/index.html" },
+    { "source": "/privacy-policy", "destination": "/index.html" },
+    { "source": "/terms-of-service", "destination": "/index.html" }
   ]
 }

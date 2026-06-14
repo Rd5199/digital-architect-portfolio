@@ -43,6 +43,51 @@ body.business-theme {
   color: var(--text-yellow);
 }
 
+.business-audience-toggle {
+  position: fixed;
+  top: 0.85rem;
+  left: 50%;
+  z-index: 10000;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.business-audience-toggle .audience-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.12rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.business-audience-toggle .audience-toggle__option {
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  padding: 0.35rem 0.7rem;
+  cursor: pointer;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: color 0.25s ease, background 0.25s ease;
+  white-space: nowrap;
+}
+
+.business-audience-toggle .audience-toggle__option.is-active {
+  color: #070707;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.business-audience-toggle .audience-toggle__option:not(.is-active):hover {
+  color: rgba(255, 255, 255, 0.88);
+}
+
 nav {
   justify-content: space-between;
   mix-blend-mode: normal;
