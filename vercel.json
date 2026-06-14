@@ -19,7 +19,24 @@
       "dest": "/api/$1"
     },
     {
-      "handle": "filesystem"
+      "src": "/business-landing/(.*)",
+      "dest": "/business-landing/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/models/(.*)",
+      "dest": "/models/$1"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "/sitemap.xml",
+      "dest": "/sitemap.xml"
     },
     {
       "src": "/(.*)",
