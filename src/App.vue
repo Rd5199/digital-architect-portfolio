@@ -1,5 +1,11 @@
 <template>
-  <div class="app" :class="{ 'app--immersive': isImmersiveLanding }">
+  <div
+    class="app"
+    :class="{
+      'app--immersive': isImmersiveLanding,
+      'app--editorial': isBusinessEditorial,
+    }"
+  >
     <GradientBackground3D v-if="showGradientBackground" />
 
     <div class="app-foreground">
@@ -85,6 +91,7 @@ export default defineComponent({
       isLoading,
       scrolled,
       isImmersiveLanding,
+      isBusinessEditorial,
       showGradientBackground,
       showNoiseOverlay,
     };
@@ -130,7 +137,8 @@ export default defineComponent({
   z-index: 450;
 }
 
-.app--immersive::after {
+.app--immersive::after,
+.app--editorial::after {
   display: none;
 }
 </style> 

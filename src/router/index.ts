@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { scrollToTarget, getLenis } from '../utils/smoothExperience'
 import { updatePageMeta, SITE_URL } from '../utils/seo'
+import Home from '../components/Home.vue'
 import CreatorsPage2 from '../views/CreatorsPage2.vue'
 import ModelsShowcase from '../components/ModelsShowcase.vue'
 import ProjectDetail from '../components/ProjectDetail.vue'
@@ -21,10 +22,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      beforeEnter: () => {
-        window.location.replace('/business-landing/business.html');
-        return false;
-      },
+      component: Home,
       meta: {
         audience: 'business',
         title: 'My Digital Architect | Custom AI for Service Businesses',
